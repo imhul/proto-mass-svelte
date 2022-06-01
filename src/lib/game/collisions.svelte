@@ -1,8 +1,12 @@
 <script lang="ts">
 	import Phaser, { Game, Scene } from 'phaser';
 	import { IsoPlugin, IsoPhysics } from '$lib/iso';
+	// assets
 	import CubeSprite from '$assets/sprites/isometric_pixel_1.png';
 	import TileSprite from '$assets/sprites/tile.png';
+
+	export let w: number;
+	export let h: number;
 
 	class IsoCollision extends Scene {
 		constructor() {
@@ -56,8 +60,8 @@
 		spawnTiles() {
 			var tile;
 
-			for (var xx = 0; xx < 512; xx += 38) {
-				for (var yy = 0; yy < 512; yy += 38) {
+			for (var xx = 0; xx < 1024; xx += 38) {
+				for (var yy = 0; yy < 1024; yy += 38) {
 					tile = this.add.isoSprite(xx, yy, 0, 'tile', this.isoGroup);
 					tile.setInteractive();
 
@@ -76,10 +80,10 @@
 
 		spawnCubes() {
 			let cube;
-			for (let xx = 256; xx > 0; xx -= 64) {
-				for (let yy = 256; yy > 0; yy -= 64) {
+			for (let xx = 256; xx > 0; xx -= 128) {
+				for (let yy = 256; yy > 0; yy -= 128) {
 					// Add a cube which is way above the ground
-					cube = this.add.isoSprite(xx, yy, 600, 'cube', this.isoGroup);
+					cube = this.add.isoSprite(xx, yy, 440, 'cube', this.isoGroup);
                     // cube.isoZ += 10;
 					// Enable the physics body on this cube
 					this.isoPhysics.world.enable(cube);
@@ -112,8 +116,8 @@
 
 	let config = {
 		type: Phaser.AUTO,
-		width: 800,
-		height: 600,
+		width: w,
+		height: h,
 		pixelArt: true,
 		scene: IsoCollision,
 	};

@@ -22,12 +22,15 @@ const config = {
 			postcss: true,
 			preserve: ['ld+json', 'module'],
 			typescript: true,
+			scss: {
+				prependData: '@use "src/variables.scss" as *;'
+			}
 		}),
 	],
 
 	kit: {
 		adapter: vercelAdapter(options),
-		target: '#starter',
+		target: '#root',
 		ssr: true,
 		prerender: {
 			crawl: true,
@@ -50,6 +53,9 @@ const config = {
 			},
 			envPrefix: ['VITE_', 'PROTO_MASS_'],
 			plugins: [],
+			ssr: {
+				external: ['@xstate/svelte']
+			},
 		}),
 	},
 };

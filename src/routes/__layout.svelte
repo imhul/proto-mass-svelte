@@ -1,11 +1,5 @@
-<script lang="ts">
-	// Local Imports
-
-	// External Imports
-
-	// Core services
-
-	// Components
+<script>
+	import Modal from 'svelte-simple-modal';
 </script>
 
-<slot />
+<Modal><slot /></Modal>

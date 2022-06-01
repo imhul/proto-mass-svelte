@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Point3 from './Point3';
 
 /**

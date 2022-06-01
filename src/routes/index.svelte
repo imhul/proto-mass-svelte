@@ -1,3 +1,5 @@
-{#await import('$lib/loader.svelte') then app}
-  <svelte:component this={app.default} />
-{/await}
+<script lang="ts">
+  import Home from '$ui/home.svelte';
+</script>
+
+<Home />
