@@ -4,7 +4,7 @@ const initState = {
     userId: '',
     userAva: '',
     userEmail: '',
-    isLoggedIn: false,
+    isLoggedIn: true,
     userSave: {},
     userPrefs: {},
 }

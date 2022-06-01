@@ -8,6 +8,10 @@
 	export let w: number;
 	export let h: number;
 
+	const GROWTH_COOF = 11;
+	$: totalCubes = 0;
+	$: timeout = GROWTH_COOF * 1000 * ((totalCubes <= 1 ? 1 : totalCubes));
+
 	class IsoCollision extends Scene {
 		constructor() {
 			const sceneConfig = {
@@ -19,7 +23,7 @@
 		}
 
 		preload() {
-            this.load.image('tile', TileSprite);
+			this.load.image('tile', TileSprite);
 			this.load.image('cube', CubeSprite);
 			this.load.scenePlugin({
 				key: 'IsoPlugin',
@@ -43,7 +47,7 @@
 			this.isoPhysics.projector.origin.setTo(0.5, 0.3);
 
 			// Add some first cubes to our scene
-            this.spawnTiles();
+			this.spawnTiles();
 			this.spawnCubes();
 		}
 
@@ -74,43 +78,51 @@
 						this.clearTint();
 						this.isoZ -= 5;
 					});
+
+					// tile.on('pointerdown', function () {
+					// 	this.spawnCubes();
+					// });
 				}
 			}
 		}
 
-		spawnCubes() {
+		createCube() {
+			totalCubes += 1;
 			let cube;
-			for (let xx = 256; xx > 0; xx -= 128) {
-				for (let yy = 256; yy > 0; yy -= 128) {
-					// Add a cube which is way above the ground
-					cube = this.add.isoSprite(xx, yy, 440, 'cube', this.isoGroup);
-                    // cube.isoZ += 10;
-					// Enable the physics body on this cube
-					this.isoPhysics.world.enable(cube);
 
-					// Collide with the world bounds so it doesn't go falling forever or fly off the screen!
-					cube.body.collideWorldBounds = true;
+			// Add a cube which is way above the ground
+			cube = this.add.isoSprite(256, 256, 440, 'cube', this.isoGroup);
+			// cube.isoZ += 10;
+			// Enable the physics body on this cube
+			this.isoPhysics.world.enable(cube);
 
-					// Add a full bounce on the x and y axes, and a bit on the z axis.
-					cube.body.bounce.set(1, 1, 0.2);
+			// Collide with the world bounds so it doesn't go falling forever or fly off the screen!
+			cube.body.collideWorldBounds = true;
 
-					// Send the cubes off in random x and y directions! Wheee!
-					const randomX = Math.trunc(Math.random() * 100 - 50);
-					const randomY = Math.trunc(Math.random() * 100 - 50);
-					cube.body.velocity.setTo(randomX, randomY, 0);
-					cube.setInteractive();
+			// Add a full bounce on the x and y axes, and a bit on the z axis.
+			cube.body.bounce.set(1, 1, 0.2);
 
-					cube.on('pointerover', function () {
-						this.setTint(0x86bfda);
-						this.isoZ += 5;
-					});
+			// Send the cubes off in random x and y directions! Wheee!
+			const randomX = Math.trunc(Math.random() * 100 - 50);
+			const randomY = Math.trunc(Math.random() * 100 - 50);
+			cube.body.velocity.setTo(randomX, randomY, 0);
+			cube.setInteractive();
 
-					cube.on('pointerout', function () {
-						this.clearTint();
-						this.isoZ -= 5;
-					});
-				}
-			}
+			cube.on('pointerover', function () {
+				this.setTint(0x86bfda);
+			});
+
+			cube.on('pointerout', function () {
+				this.clearTint();
+			});
+		}
+
+		spawnCubes() {
+			const timer = setTimeout(() => {
+				this.createCube();
+				this.spawnCubes();
+				totalCubes > 9 && clearTimeout(timer);
+			}, timeout);
 		}
 	}
 
