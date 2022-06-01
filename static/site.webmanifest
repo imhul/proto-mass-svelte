@@ -1,0 +1,8 @@
+{
+	"background_color": "#ffffff",
+	"theme_color": "#ffffff",
+	"name": "Proto-Mass",
+	"short_name": "protom",
+	"display": "minimal-ui",
+	"start_url": "/"
+}

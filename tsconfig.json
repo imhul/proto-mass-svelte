@@ -1,0 +1,61 @@
+{
+	"compilerOptions": {
+		"moduleResolution": "node",
+		"module": "es2020",
+		"lib": ["es2020", "DOM"],
+		"target": "es2020",
+		/**
+			svelte-preprocess cannot figure out whether you have a value or a type, so tell TypeScript
+			to enforce using \`import type\` instead of \`import\` for Types.
+			*/
+		"importsNotUsedAsValues": "error",
+		"isolatedModules": true,
+		"resolveJsonModule": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		/**
+			To have warnings/errors of the Svelte compiler at the correct position,
+			enable source maps by default.
+			*/
+		"sourceMap": true,
+		"esModuleInterop": true,
+		"skipLibCheck": true,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"importHelpers": true,
+		"baseUrl": ".",
+		"allowJs": true,
+		"checkJs": true,
+		"types": ["node", "node-fetch", "nprogress"],
+		"paths": {
+			"$lib": ["src/lib/*"],
+			"$store": ["src/lib/store/*"],
+			"$utils": ["src/lib/utils/*"],
+			"$ui": ["src/lib/ui/*"],
+			"$game": ["src/lib/game/*"],
+			"$assets": ["src/lib/assets/*"]
+		}
+	},
+	"include": [
+		"*.d.ts",
+		"src/**/*.d.ts",
+		"src/**/*.js",
+		"src/**/*.ts",
+		"src/**/*.svelte",
+		"src/**/*.d.ts",
+		"src/*.d.ts",
+		"src/**/**/**/*.ts"
+	],
+	"exclude": [
+		"node_modules/*",
+		"dist/*",
+		".svelte/*",
+		".svelte-kit/*",
+		"build/*",
+		"coverage/*",
+		".vercel_build_output/*",
+		"functions/*",
+		"static/*",
+		"scripts/*"
+	]
+}
