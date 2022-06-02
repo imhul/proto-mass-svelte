@@ -10,7 +10,7 @@
 
 	const GROWTH_COOF = 11;
 	$: totalCubes = 0;
-	$: timeout = GROWTH_COOF * 1000 * ((totalCubes <= 1 ? 1 : totalCubes));
+	$: timeout = GROWTH_COOF * 1000 * (totalCubes <= 1 ? 1 : totalCubes);
 
 	class IsoCollision extends Scene {
 		constructor() {

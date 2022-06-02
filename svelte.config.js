@@ -23,8 +23,8 @@ const config = {
 			preserve: ['ld+json', 'module'],
 			typescript: true,
 			scss: {
-				prependData: '@use "src/variables.scss" as *;'
-			}
+				prependData: '@use "src/variables.scss" as *;',
+			},
 		}),
 	],
 
@@ -54,7 +54,7 @@ const config = {
 			envPrefix: ['VITE_', 'PROTO_MASS_'],
 			plugins: [],
 			ssr: {
-				external: ['@xstate/svelte']
+				external: ['@xstate/svelte'],
 			},
 		}),
 	},

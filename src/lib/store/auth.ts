@@ -1,13 +1,13 @@
 import { writable } from 'svelte/store';
 
 const initState = {
-    userId: '',
-    userAva: '',
-    userEmail: '',
-    isLoggedIn: true,
-    userSave: {},
-    userPrefs: {},
-}
+	userId: '',
+	userAva: '',
+	userEmail: '',
+	isLoggedIn: true,
+	userSave: {},
+	userPrefs: {},
+};
 
 const user = writable(initState);
 
