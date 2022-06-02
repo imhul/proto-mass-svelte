@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Phaser, { Game, Scene } from 'phaser';
+	import { Game, Scene } from 'svelte-phaser';
 	import { IsoPlugin, IsoPhysics } from '$lib/iso';
 	// assets
 	import CubeSprite from '$assets/sprites/isometric_pixel_1.png';
@@ -44,7 +44,7 @@
 			// Apply some gravity on our cubes
 			this.isoPhysics.world.gravity.setTo(0, 0, -500);
 
-			this.isoPhysics.projector.origin.setTo(0.5, 0.3);
+			this.isoPhysics.projector.origin.setTo(0.5, 0);
 
 			// Add some first cubes to our scene
 			this.spawnTiles();
