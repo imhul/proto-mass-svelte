@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import type Phaser from 'phaser';
 	import { goto } from '$app/navigation';
 	// store
 	import user from '$store/auth';
 	// components
-	import { Game, Camera, Scene, Tilemap, TileLayer, TileSprite } from 'svelte-phaser';
+	import { Game, Camera, Scene, TileSprite } from 'svelte-phaser';
 	import { IsoPlugin, IsoPhysics } from '$lib/iso';
 	// assets
 	import { getMap } from '$utils/getMap';
@@ -27,7 +28,6 @@
 	$: y = 0;
 
 	let game: Phaser.Game | undefined;
-	let sceneInst: Phaser.Scene | undefined;
 	let tilePositionX = 0;
 	const camStep = 10;
 	const GROWTH_MAX = 20;
@@ -53,10 +53,6 @@
 	};
 
 	const step = () => {
-		// console.info('step');
-		// if (sceneInst) {
-		// 	sceneInst.isoPhysics.world.collide(sceneInst.isoGroup);
-		// }
 		tilePositionX += 0.1;
 	};
 
@@ -73,7 +69,7 @@
 	});
 
 	const spawnTiles = (scene: Phaser.Scene) => {
-		let tile;
+		let tile: any;
 		let i = 0;
 
 		for (var xx = 0; xx < 780; xx += 26) {
@@ -92,13 +88,13 @@
 				tile.setInteractive();
 
 				tile.on('pointerover', function () {
-					this.setTint(0x86bfda);
-					this.isoZ += 5;
+					tile.setTint(0x86bfda);
+					tile.isoZ += 5;
 				});
 
 				tile.on('pointerout', function () {
-					this.clearTint();
-					this.isoZ -= 5;
+					tile.clearTint();
+					tile.isoZ -= 5;
 				});
 			}
 		}
@@ -151,7 +147,6 @@
 <Game bind:instance="{game}" width="{w}" height="{h}" backgroundColor="#000">
 	{#if game}
 		<Scene
-			bind:instance="{sceneInst}"
 			key="main"
 			mapAdd="{{ isoPlugin: 'iso', isoPhysics: 'isoPhysics' }}"
 			physics="{{ default: 'arcade' }}"

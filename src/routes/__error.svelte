@@ -44,8 +44,8 @@
 		<!-- End: Error Message container -->
 	</div>
 </div>
-<!-- End: Error View Layout -->
 
+<!-- End: Error View Layout -->
 <style>
 	h1 {
 		font-size: 2.8em;
