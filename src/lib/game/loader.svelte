@@ -77,12 +77,17 @@
 		let i = 0;
 
 		for (var xx = 0; xx < 780; xx += 26) {
-
-			for (var yy = 0; yy < 780; yy += 26) {	
+			for (var yy = 0; yy < 780; yy += 26) {
 				i++;
 
 				// console.info('type: ', getMap[i][j]);
-				tile = scene.add.isoSprite(xx, yy, 0, 'tile-' + getMap.flat(Infinity)[i], scene.isoGroup);
+				tile = scene.add.isoSprite(
+					xx,
+					yy,
+					0,
+					'tile-' + getMap.flat(Infinity)[i],
+					scene.isoGroup,
+				);
 				tile.isoZ -= 30;
 				tile.setInteractive();
 
@@ -95,13 +100,8 @@
 					this.clearTint();
 					this.isoZ -= 5;
 				});
-
 			}
 		}
-
-
-			
-
 	};
 
 	const createCube = (scene: Phaser.Scene) => {
