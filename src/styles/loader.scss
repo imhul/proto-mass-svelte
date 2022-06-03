@@ -1,0 +1,53 @@
+.Preloader {
+    width: 50%;
+    position: absolute;
+    &.mini {
+        width: 100%;
+        position: relative;
+        .ant-progress-text {
+            top: -30px;
+            width: 85px;
+        }
+        .ant-progress-outer {
+            .ant-progress-inner {
+                border: 1px solid $game-color;
+            }
+        }
+    }
+    &.medium {
+        width: 100%;
+        position: relative;
+        .ant-progress-outer {
+            .ant-progress-inner {
+                border: 2px solid $game-color;
+            }
+        }
+    }
+    .ant-progress-outer {
+        margin: 0;
+        padding: 0;
+        .ant-progress-inner {
+            background-color: $game-color-dark;
+            border-radius: 0;
+            border: 3px solid $game-color;
+            .ant-progress-bg {
+                &:before {
+                    border-radius: 0;
+                    background-color: $game-color;
+                }
+            }
+        }
+    }
+    .ant-progress-text {
+        font-family: 'PressStart2P-Regular';
+        color: $game-color;
+        display: block;
+        width: 100%;
+        font-size: 1em;
+        text-align: center;
+        margin: 0px auto;
+        position: relative;
+        line-height: 0;
+        top: -17px;
+    }
+}

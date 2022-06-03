@@ -1,4 +1,5 @@
 <script lang="ts">
+	import Phaser from 'phaser';
 	import { Game, Scene } from 'svelte-phaser';
 	import { IsoPlugin, IsoPhysics } from '$lib/iso';
 	// assets
