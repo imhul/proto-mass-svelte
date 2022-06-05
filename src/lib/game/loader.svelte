@@ -1,13 +1,12 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { onMount } from 'svelte';
-	import type Phaser from 'phaser';
-	// import type Phaser from 'phaser';
+	import Phaser from 'phaser';
 	import { goto } from '$app/navigation';
 	// store
 	import user from '$store/auth';
 	// components
-	import { Game, Camera, Scene, TileSprite } from 'svelte-phaser';
+	import { Game, Scene, TileSprite } from 'svelte-phaser';
 	import { IsoPlugin, IsoPhysics } from '$lib/iso';
 	// utils
 	import { getMap } from '$utils/getMap';
@@ -53,34 +52,18 @@
 
 	let game: Phaser.Game | undefined;
 	let tilePositionX = 0;
-	const camStep = 10;
 	const GROWTH_MAX = 20;
 	const GROWTH_COOF = 11;
 	$: totalCubes = 0;
 	$: timeout = GROWTH_COOF * 1000 * (totalCubes <= 1 ? 1 : totalCubes);
 
 	const onKeypress = (e: KeyboardEvent) => {
-		// if (e.key) console.info(e);
-		// console.info("key: ", e.key);
-		switch (e.key) {
-			case 'w':
-				y += camStep;
-			case 's':
-				y -= camStep;
-			case 'a':
-				x -= camStep;
-			case 'd':
-				x += camStep;
-			default:
-				break;
-		}
+		console.info('key: ', e.key);
 	};
 
 	const step = () => {
 		tilePositionX += 0.1;
 	};
-
-	// $: console.info('tilePositionX: ', tilePositionX)
 
 	onMount(() => {
 		if (!game) return;
@@ -112,16 +95,43 @@
 				tile.setInteractive();
 
 				tile.on('pointerover', function () {
-					tile.setTint(0x86bfda);
-					tile.isoZ += 5;
+					this.setTint(0x86bfda);
+					this.isoZ += 5;
 				});
 
 				tile.on('pointerout', function () {
-					tile.clearTint();
-					tile.isoZ -= 5;
+					this.clearTint();
+					this.isoZ -= 5;
 				});
 			}
 		}
+	};
+
+	const cameraControls = (scene: Phaser.Scene) => {
+		const camera = scene.cameras.main;
+		const cursors = scene.input.keyboard.createCursorKeys();
+		const controls = new Phaser.Cameras.Controls.SmoothedKeyControl({
+			camera: camera,
+			left: cursors.left,
+			right: cursors.right,
+			up: cursors.up,
+			down: cursors.down,
+			zoomIn: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
+			zoomOut: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+			zoomSpeed: 0.02,
+			acceleration: 0.06,
+			drag: 0.0005,
+			maxSpeed: 1.0,
+		});
+
+		controls.start();
+
+		camera.setBounds(0, 0, 1024, 1024);
+		camera.setZoom(1.2);
+
+		scene.update = function (time, delta) {
+			controls.update(delta);
+		};
 	};
 
 	const createCube = (scene: Phaser.Scene) => {
@@ -147,54 +157,20 @@
 		cube.body.velocity.setTo(randomX, randomY, 0);
 		cube.setInteractive();
 
-		// 	// Make the camera follow the player.
+		// Make the camera follow the player.
 		const camera = scene.cameras.main;
-		// currentCube && camera.startFollow(currentCube);
 
 		cube.on('pointerdown', function () {
 			if (currentCube) {
 				currentCube = null;
 				this.clearTint();
-				camera.stopFollow();
+				camera.stopFollow(); // Make the camera stop follow the player.
 			} else {
 				currentCube = this;
 				this.setTint(0x86bfda);
-				camera.startFollow(this);
+				camera.startFollow(this); // Make the camera follow the player.
 			}
 		});
-
-		// cube.on('pointerout', function () {
-		// 	// currentCube = null;
-		// 	// this.clearTint();
-		// });
-
-		// Set up our controls.
-		// scene.cursors = scene.input.keyboard.createCursorKeys();
-		const cursorKeys = scene.input.keyboard.createCursorKeys();
-
-		var keys = scene.input.keyboard.addKeys({
-			up: 'up',
-			down: 'down',
-			left: 'left',
-			right: 'right',
-		});
-
-		// scene.game.input.keyboard.addKeyCapture([
-		// 	Phaser.Keyboard.LEFT,
-		// 	Phaser.Keyboard.RIGHT,
-		// 	Phaser.Keyboard.UP,
-		// 	Phaser.Keyboard.DOWN,
-		// 	Phaser.Keyboard.SPACEBAR,
-		// ]);
-
-		// var space = scene.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
-		// if (currentCube) {
-		// 	space.onDown.add(function () {
-		// 		currentCube.body.velocity.z = 300;
-		// 	}, scene);
-
-		// }
 
 		spawnCubes(scene);
 	};
@@ -247,12 +223,12 @@
 				scene.isoPhysics.projector.origin.setTo(0.5, 0);
 
 				// Add first cube to scene
+				cameraControls(scene);
 				spawnTiles(scene);
 				spawnCubes(scene);
 			}}"
 			active="{$user.isLoggedIn}"
 		>
-			<Camera x="{x}" y="{y}" width="{w}" height="{h}" />
 			<TileSprite
 				x="{0}"
 				y="{0}"
