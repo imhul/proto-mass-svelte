@@ -39,9 +39,6 @@ const config = {
 			pages: ['*'],
 		},
 		vite: () => ({
-			optimizeDeps: {
-				include: ['pixi.js'],
-			},
 			resolve: {
 				alias: {
 					$store: resolve(__dirname, './src/lib/store'),
