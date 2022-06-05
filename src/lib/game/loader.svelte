@@ -2,14 +2,16 @@
 	import { browser } from '$app/env';
 	import { onMount } from 'svelte';
 	import type Phaser from 'phaser';
+	// import type Phaser from 'phaser';
 	import { goto } from '$app/navigation';
 	// store
 	import user from '$store/auth';
 	// components
 	import { Game, Camera, Scene, TileSprite } from 'svelte-phaser';
 	import { IsoPlugin, IsoPhysics } from '$lib/iso';
-	// assets
+	// utils
 	import { getMap } from '$utils/getMap';
+	// assets
 	import CubeSprite from '$assets/sprites/cube/isometric_pixel_0123.png';
 	import Tile0 from '$assets/sprites/cube/isometric_pixel_0054.png';
 	import Tile1 from '$assets/sprites/cube/isometric_pixel_0207.png';
@@ -20,6 +22,27 @@
 	import Tile6 from '$assets/sprites/cube/isometric_pixel_0212.png';
 	import Tile7 from '$assets/sprites/cube/isometric_pixel_0063.png';
 	import Tile8 from '$assets/sprites/cube/isometric_pixel_0063.png';
+
+	interface ICube {
+		body: {
+			collideWorldBounds: boolean;
+			bounce: {
+				set: (arg0: number, arg1: number, arg2: number) => void;
+			};
+			velocity: {
+				setTo: (arg0: number, arg1: number, arg2: number) => void;
+				z: number;
+			};
+		};
+		setInteractive: () => void;
+		on: (
+			arg0: string,
+			arg1: {
+				(): void;
+				(): void;
+			},
+		) => void;
+	}
 
 	$: !$user.isLoggedIn && goto('/');
 
@@ -104,11 +127,11 @@
 	const createCube = (scene: Phaser.Scene) => {
 		console.info('createCube run!');
 		totalCubes += 1;
-		let cube;
+		let cube: ICube;
+		let currentCube: ICube | null;
 
 		// Add a cube which is way above the ground
 		cube = scene.add.isoSprite(256, 256, 600, 'cube', scene.isoGroup);
-		// cube.isoZ += 10;
 		// Enable the physics body on this cube
 		scene.isoPhysics.world.enable(cube);
 
@@ -125,12 +148,36 @@
 		cube.setInteractive();
 
 		cube.on('pointerover', function () {
+			currentCube = this;
 			this.setTint(0x86bfda);
 		});
 
 		cube.on('pointerout', function () {
-			this.clearTint();
+			// currentCube = null;
+			// this.clearTint();
 		});
+
+		// Set up our controls.
+		// scene.cursors = scene.input.keyboard.createCursorKeys();
+
+		// scene.game.input.keyboard.addKeyCapture([
+		// 	Phaser.Keyboard.LEFT,
+		// 	Phaser.Keyboard.RIGHT,
+		// 	Phaser.Keyboard.UP,
+		// 	Phaser.Keyboard.DOWN,
+		// 	Phaser.Keyboard.SPACEBAR,
+		// ]);
+
+		// var space = scene.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
+		// if (currentCube) {
+		// 	space.onDown.add(function () {
+		// 		currentCube.body.velocity.z = 300;
+		// 	}, scene);
+
+		// 	// Make the camera follow the player.
+		// 	scene.camera.follow(currentCube);
+		// }
 
 		spawnCubes(scene);
 	};
@@ -145,7 +192,7 @@
 
 <svelte:window bind:innerHeight="{h}" bind:innerWidth="{w}" on:keypress="{onKeypress}" />
 
-{#if browser && navigator}
+<!-- {#if browser} -->
 <Game bind:instance="{game}" width="{w}" height="{h}" backgroundColor="#000">
 	{#if game}
 		<Scene
@@ -178,11 +225,11 @@
 			create="{(scene) => {
 				scene.isoGroup = scene.add.group();
 
-				// Apply some gravity on our cubes
+				// Apply some gravity on cubes
 				scene.isoPhysics.world.gravity.setTo(0, 0, -500);
 				scene.isoPhysics.projector.origin.setTo(0.5, 0);
 
-				// Add some first cubes to our scene
+				// Add first cube to scene
 				spawnTiles(scene);
 				spawnCubes(scene);
 			}}"
@@ -202,4 +249,4 @@
 		</Scene>
 	{/if}
 </Game>
-{/if}
+<!-- {/if} -->
