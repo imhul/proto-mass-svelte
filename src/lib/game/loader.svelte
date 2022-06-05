@@ -1,16 +1,3 @@
-<!-- <script context="module">
-	import { browser, dev } from '$app/env';
-	// we don't need any JS on this page, though we'll load
-	// it in dev so that we get hot module replacement...
-	export const hydrate = dev;
-	// ...but if the client-side router is already loaded
-	// (i.e. we came here from elsewhere in the app), use it
-	export const router = browser;
-	// since there's no dynamic data here, we can prerender
-	// it so that it gets served as a static asset in prod
-	export const prerender = true;
-  </script> -->
-
 <script lang="ts">
 	import { browser } from '$app/env';
 	import { onMount } from 'svelte';
@@ -115,7 +102,7 @@
 	};
 
 	const createCube = (scene: Phaser.Scene) => {
-		console.info('createCube: ', createCube);
+		console.info('createCube run!');
 		totalCubes += 1;
 		let cube;
 
@@ -158,7 +145,7 @@
 
 <svelte:window bind:innerHeight="{h}" bind:innerWidth="{w}" on:keypress="{onKeypress}" />
 
-{#if browser}
+{#if browser && navigator}
 <Game bind:instance="{game}" width="{w}" height="{h}" backgroundColor="#000">
 	{#if game}
 		<Scene
