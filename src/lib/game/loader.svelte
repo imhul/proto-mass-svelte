@@ -131,7 +131,7 @@
 		let currentCube: ICube | null;
 
 		// Add a cube which is way above the ground
-		cube = scene.add.isoSprite(256, 256, 600, 'cube', scene.isoGroup);
+		cube = scene.add.isoSprite(780, 780, 600, 'cube', scene.isoGroup);
 		// Enable the physics body on this cube
 		scene.isoPhysics.world.enable(cube);
 
@@ -142,23 +142,42 @@
 		cube.body.bounce.set(1, 1, 0.2);
 
 		// Send the cubes off in random x and y directions! Wheee!
-		const randomX = Math.trunc(Math.random() * 100 - 50);
-		const randomY = Math.trunc(Math.random() * 100 - 50);
+		const randomX = Math.trunc(Math.random() * 400 - 50);
+		const randomY = Math.trunc(Math.random() * 400 - 50);
 		cube.body.velocity.setTo(randomX, randomY, 0);
 		cube.setInteractive();
 
-		cube.on('pointerover', function () {
-			currentCube = this;
-			this.setTint(0x86bfda);
+		// 	// Make the camera follow the player.
+		const camera = scene.cameras.main;
+		// currentCube && camera.startFollow(currentCube);
+
+		cube.on('pointerdown', function () {
+			if (currentCube) {
+				currentCube = null;
+				this.clearTint();
+				camera.stopFollow();
+			} else {
+				currentCube = this;
+				this.setTint(0x86bfda);
+				camera.startFollow(this);
+			}
 		});
 
-		cube.on('pointerout', function () {
-			// currentCube = null;
-			// this.clearTint();
-		});
+		// cube.on('pointerout', function () {
+		// 	// currentCube = null;
+		// 	// this.clearTint();
+		// });
 
 		// Set up our controls.
 		// scene.cursors = scene.input.keyboard.createCursorKeys();
+		const cursorKeys = scene.input.keyboard.createCursorKeys();
+
+		var keys = scene.input.keyboard.addKeys({
+			up: 'up',
+			down: 'down',
+			left: 'left',
+			right: 'right',
+		});
 
 		// scene.game.input.keyboard.addKeyCapture([
 		// 	Phaser.Keyboard.LEFT,
@@ -175,8 +194,6 @@
 		// 		currentCube.body.velocity.z = 300;
 		// 	}, scene);
 
-		// 	// Make the camera follow the player.
-		// 	scene.camera.follow(currentCube);
 		// }
 
 		spawnCubes(scene);
