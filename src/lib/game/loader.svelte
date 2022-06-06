@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { browser } from '$app/env';
+	// import { browser } from '$app/env';
 	import { onMount } from 'svelte';
 	import Phaser from 'phaser';
 	import { goto } from '$app/navigation';
 	// store
 	import user from '$store/auth';
 	// components
-	import { Game, Scene, TileSprite } from 'svelte-phaser';
+	import { Game, Scene, Container, TileSprite } from 'svelte-phaser';
 	import { IsoPlugin, IsoPhysics } from '$lib/iso';
 	// utils
 	import { getMap } from '$utils/getMap';
@@ -45,8 +45,8 @@
 
 	$: !$user.isLoggedIn && goto('/');
 
-	$: h = 600;
-	$: w = 800;
+	$: h = 0;
+	$: w = 0;
 	$: x = 0;
 	$: y = 0;
 
@@ -75,20 +75,47 @@
 		};
 	});
 
+	const cameraControls = (scene: Phaser.Scene) => {
+		const camera = scene.cameras.main;
+		// const cursors = scene.input.keyboard.createCursorKeys();
+		const controls = new Phaser.Cameras.Controls.SmoothedKeyControl({
+			camera: camera,
+			left: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A), // cursors.left,
+			right: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D), // cursors.right,
+			up: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W), // cursors.up,
+			down: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S), // cursors.down,
+			zoomIn: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
+			zoomOut: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
+			zoomSpeed: 0.02,
+			acceleration: 0.1,
+			drag: 0.0001,
+			maxSpeed: 1.05,
+		});
+
+		controls.start();
+		camera.setBounds(0, 0, 1024, 1024);
+		camera.setZoom(1.4);
+
+		scene.update = function (time, delta) {
+			controls.update(delta);
+		};
+	};
+
 	const spawnTiles = (scene: Phaser.Scene) => {
 		let tile: any;
 		let i = 0;
+		const mapSize = 780;
+		const container = scene.add.container(0, 0, tile);
 
-		for (var xx = 0; xx < 780; xx += 26) {
-			for (var yy = 0; yy < 780; yy += 26) {
+		for (var xx = 0; xx < mapSize; xx += 26) {
+			for (var yy = 0; yy < mapSize; yy += 26) {
 				i++;
 
-				// console.info('type: ', getMap[i][j]);
 				tile = scene.add.isoSprite(
 					xx,
 					yy,
 					0,
-					'tile-' + getMap.flat(Infinity)[i],
+					'tile-' + getMap.flat(Infinity)[i] ?? 0,
 					scene.isoGroup,
 				);
 				tile.isoZ -= 30;
@@ -105,33 +132,6 @@
 				});
 			}
 		}
-	};
-
-	const cameraControls = (scene: Phaser.Scene) => {
-		const camera = scene.cameras.main;
-		const cursors = scene.input.keyboard.createCursorKeys();
-		const controls = new Phaser.Cameras.Controls.SmoothedKeyControl({
-			camera: camera,
-			left: cursors.left,
-			right: cursors.right,
-			up: cursors.up,
-			down: cursors.down,
-			zoomIn: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q),
-			zoomOut: scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.E),
-			zoomSpeed: 0.02,
-			acceleration: 0.06,
-			drag: 0.0005,
-			maxSpeed: 1.0,
-		});
-
-		controls.start();
-
-		camera.setBounds(0, 0, 1024, 1024);
-		camera.setZoom(1.2);
-
-		scene.update = function (time, delta) {
-			controls.update(delta);
-		};
 	};
 
 	const createCube = (scene: Phaser.Scene) => {
@@ -181,65 +181,76 @@
 			totalCubes === GROWTH_MAX && clearTimeout(timer);
 		}, timeout);
 	};
+
+	const preload = (scene: Phaser.Scene) => {
+		scene.load.image('tile-0', Tile0);
+		scene.load.image('tile-1', Tile1);
+		scene.load.image('tile-2', Tile2);
+		scene.load.image('tile-3', Tile3);
+		scene.load.image('tile-4', Tile4);
+		scene.load.image('tile-5', Tile5);
+		scene.load.image('tile-6', Tile6);
+		scene.load.image('tile-7', Tile7);
+		scene.load.image('tile-8', Tile8);
+		scene.load.image('cube', CubeSprite);
+		scene.load.image('stars1', '/images/parallax_1.png');
+		scene.load.scenePlugin({
+			key: 'IsoPlugin',
+			url: IsoPlugin,
+			sceneKey: 'iso',
+		});
+		scene.load.scenePlugin({
+			key: 'IsoPhysics',
+			url: IsoPhysics,
+			sceneKey: 'isoPhysics',
+		});
+	};
+
+	const create = (scene: Phaser.Scene) => {
+		scene.isoGroup = scene.add.group();
+
+		// Apply some gravity on cubes
+		scene.isoPhysics.world.gravity.setTo(0, 0, -500);
+		scene.isoPhysics.projector.origin.setTo(0.5, 0);
+
+
+		// Add first cube to scene
+		cameraControls(scene);
+		spawnTiles(scene);
+		spawnCubes(scene);
+	};
 </script>
 
 <svelte:window bind:innerHeight="{h}" bind:innerWidth="{w}" on:keypress="{onKeypress}" />
 
 <!-- {#if browser} -->
-<Game bind:instance="{game}" width="{w}" height="{h}" backgroundColor="#000">
-	{#if game}
-		<Scene
-			key="main"
-			mapAdd="{{ isoPlugin: 'iso', isoPhysics: 'isoPhysics' }}"
-			physics="{{ default: 'arcade' }}"
-			preload="{(scene) => {
-				scene.load.image('tile-0', Tile0);
-				scene.load.image('tile-1', Tile1);
-				scene.load.image('tile-2', Tile2);
-				scene.load.image('tile-3', Tile3);
-				scene.load.image('tile-4', Tile4);
-				scene.load.image('tile-5', Tile5);
-				scene.load.image('tile-6', Tile6);
-				scene.load.image('tile-7', Tile7);
-				scene.load.image('tile-8', Tile8);
-				scene.load.image('cube', CubeSprite);
-				scene.load.image('stars1', '/images/parallax_1.png');
-				scene.load.scenePlugin({
-					key: 'IsoPlugin',
-					url: IsoPlugin,
-					sceneKey: 'iso',
-				});
-				scene.load.scenePlugin({
-					key: 'IsoPhysics',
-					url: IsoPhysics,
-					sceneKey: 'isoPhysics',
-				});
-			}}"
-			create="{(scene) => {
-				scene.isoGroup = scene.add.group();
-
-				// Apply some gravity on cubes
-				scene.isoPhysics.world.gravity.setTo(0, 0, -500);
-				scene.isoPhysics.projector.origin.setTo(0.5, 0);
-
-				// Add first cube to scene
-				cameraControls(scene);
-				spawnTiles(scene);
-				spawnCubes(scene);
-			}}"
-			active="{$user.isLoggedIn}"
-		>
-			<TileSprite
-				x="{0}"
-				y="{0}"
-				width="{w}"
-				height="{h}"
-				originX="{0}"
-				originY="{0}"
-				texture="stars1"
-				tilePositionX="{tilePositionX}"
-			/>
-		</Scene>
-	{/if}
-</Game>
-<!-- {/if} -->
+{#if w > 0 && h > 0}
+	<Game bind:instance="{game}" width="{w}" height="{h}" backgroundColor="#000">
+		{#if game}
+			<Scene
+				key="main"
+				mapAdd="{{ isoPlugin: 'iso', isoPhysics: 'isoPhysics' }}"
+				physics="{{ default: 'arcade' }}"
+				preload="{preload}"
+				create="{create}"
+				active="{$user.isLoggedIn}"
+			>
+				<TileSprite
+					x="{0}"
+					y="{0}"
+					width="{w}"
+					height="{h}"
+					originX="{0}"
+					originY="{0}"
+					texture="stars1"
+					tilePositionX="{tilePositionX}"
+				/>
+				<Container x={200} y={200} width={100} height={100} depth={-30}>
+					{#each expression as name}
+					
+					{/each}
+				</Container>
+			</Scene>
+		{/if}
+	</Game>
+{/if}

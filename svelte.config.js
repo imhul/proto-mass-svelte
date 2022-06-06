@@ -53,6 +53,14 @@ const config = {
 			ssr: {
 				external: ['@xstate/svelte'],
 			},
+			css: {
+				preprocessorOptions: {
+					postcss: true,
+					scss: {
+						additionalData: '@use "src/variables.scss" as *;'
+					}
+				}
+			}
 		}),
 	},
 };

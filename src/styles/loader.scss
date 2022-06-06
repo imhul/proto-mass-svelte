@@ -10,7 +10,7 @@
         }
         .ant-progress-outer {
             .ant-progress-inner {
-                border: 1px solid $game-color;
+                border: 1px solid var(--game-color);
             }
         }
     }
@@ -19,7 +19,7 @@
         position: relative;
         .ant-progress-outer {
             .ant-progress-inner {
-                border: 2px solid $game-color;
+                border: 2px solid var(--game-color);
             }
         }
     }
@@ -27,20 +27,20 @@
         margin: 0;
         padding: 0;
         .ant-progress-inner {
-            background-color: $game-color-dark;
+            background-color: var(--game-color-dark);
             border-radius: 0;
-            border: 3px solid $game-color;
+            border: 3px solid var(--game-color);
             .ant-progress-bg {
                 &:before {
                     border-radius: 0;
-                    background-color: $game-color;
+                    background-color: var(--game-color);
                 }
             }
         }
     }
     .ant-progress-text {
         font-family: 'PressStart2P-Regular';
-        color: $game-color;
+        color: var(--game-color);
         display: block;
         width: 100%;
         font-size: 1em;

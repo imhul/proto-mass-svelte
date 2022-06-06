@@ -1,3 +1,4 @@
+import Phaser from 'phaser';
 import Body from './Body';
 import Point3 from '../Point3';
 import Cube from '../Cube';
@@ -8,7 +9,35 @@ import { ISOSPRITE } from '../IsoSprite';
 const { GameObjects, Structs } = Phaser;
 
 export default class World {
-	constructor(scene) {
+	checkCollision: { up: boolean; down: boolean; frontX: boolean; frontY: boolean; backX: boolean; backY: boolean; };
+	OVERLAP_BIAS: number;
+	bodies: Phaser.Structs.Set<unknown>;
+	bounds: Cube;
+	gravity: Point3;
+	forceXY: boolean;
+	skipTree: boolean;
+	maxObjects: number;
+	maxLevels: number;
+	octree: Octree;
+	_overlap: number;
+	_maxOverlap: number;
+	_velocity1: number;
+	_velocity2: number;
+	_newVelocity1: number;
+	_newVelocity2: number;
+	_average: number;
+	_mapData: never[];
+	_result: boolean;
+	_total: number;
+	_angle: number;
+	_dx: number;
+	_dy: number;
+	_dz: number;
+	scene: any;
+	_drag!: number;
+	_potentials!: [];
+	_velocityDelta!: number;
+	constructor(scene: Phaser.Scene) {
 		/**
 		 * Bodies
 		 *
@@ -22,7 +51,7 @@ export default class World {
 		 * @property {Cube} bounds - The bounds inside of which the physics world exists. Defaults to match the world bounds relatively closely given the isometric projection.
 		 */
 		const { width, height } = scene.sys.game.config;
-		this.bounds = new Cube(0, 0, 0, width * 0.5, width * 0.5, height);
+		this.bounds = new Cube(0, 0, 0, Number(width) * 0.5, Number(width) * 0.5, Number(height));
 
 		/**
 		 * @property {Point3} gravity - The World gravity setting. Defaults to x: 0, y: 0, z: 0 or no gravity.
@@ -177,7 +206,7 @@ export default class World {
 	 * @param {object|array|Phaser.Group} object - The game object to create the physics body on. Can also be an array or Group of objects, a body will be created on every child that has a `body` property.
 	 * @param {boolean} [children=true] - Should a body be created on all children of this object? If true it will recurse down the display list as far as it can go.
 	 */
-	enable(object, children = true) {
+	enable(object: any[] | Phaser.Structs.Set<Phaser.GameObjects.GameObject>, children = true) {
 		var i = 1;
 
 		if (Array.isArray(object)) {
@@ -218,7 +247,7 @@ export default class World {
 	 * @method IsoPhysics#enableBody
 	 * @param {object} object - The game object to create the physics body on. A body will only be created if this object has a null `body` property.
 	 */
-	enableBody(object) {
+	enableBody(object: { body: unknown; }) {
 		if (object.body === null) {
 			object.body = new Body(object);
 			this.bodies.set(object.body);
@@ -238,7 +267,7 @@ export default class World {
 	 * @param {number} widthY - New Y width (depth) of the world. Can never be smaller than the Game.width.
 	 * @param {number} height - New height of the world. Can never be smaller than the Game.height.
 	 */
-	setBounds(x, y, z, widthX, widthY, height) {
+	setBounds(x: number, y: number, z: number, widthX: number, widthY: number, height: number) {
 		this.bounds.setTo(x, y, z, widthX, widthY, height);
 	}
 
@@ -265,7 +294,7 @@ export default class World {
 	 * @param {number} [max=10000] - An absolute value cap for the velocity.
 	 * @return {number} The altered Velocity value.
 	 */
-	computeVelocity(axis, body, velocity, acceleration, drag, max, delta) {
+	computeVelocity(axis: number, body: { allowGravity: any; gravity: { x: number; y: number; z: number; }; }, velocity: number, acceleration: number, drag: number, max: number, delta: number | undefined) {
 		max = max || 10000;
 
 		if (axis === 1 && body.allowGravity) {
@@ -311,7 +340,7 @@ export default class World {
 	 * @param {boolean} overlapOnly - Just run an overlap or a full collision.
 	 * @return {boolean} Returns true if the bodies collided, otherwise false.
 	 */
-	separate(body1, body2, processCallback, callbackContext, overlapOnly) {
+	separate(body1: { enable: any; sprite: any; gravity: { z: number; x: number; y: number; }; }, body2: { enable: any; sprite: any; }, processCallback: { call: (arg0: any, arg1: any, arg2: any) => boolean; }, callbackContext: any, overlapOnly: any) {
 		if (!body1.enable || !body2.enable || !this.intersects(body1, body2)) {
 			return false;
 		}
@@ -359,7 +388,7 @@ export default class World {
 	 * @param {Body} body2 - The Body object to check.
 	 * @return {boolean} True if they intersect, otherwise false.
 	 */
-	intersects(body1, body2) {
+	intersects(body1: { frontX: number; frontY: number; x: number; y: number; top: number; z: number; }, body2: { x: number; y: number; frontX: number; frontY: number; z: number; top: number; }) {
 		if (body1.frontX <= body2.x) {
 			return false;
 		}
@@ -397,7 +426,7 @@ export default class World {
 	 * @param {boolean} overlapOnly - If true the bodies will only have their overlap data set, no separation or exchange of velocity will take place.
 	 * @return {boolean} Returns true if the bodies were separated, otherwise false.
 	 */
-	separateX(body1, body2, overlapOnly) {
+	separateX(body1: { immovable: any; deltaAbsX: () => any; deltaX: () => number; embedded: boolean; frontX: number; checkCollision: { frontX: boolean; backX: boolean; }; touching: { none: boolean; frontX: boolean; backX: boolean; }; x: number; overlapX: any; customSeparateX: any; velocity: { x: number; }; mass: number; bounce: { x: number; }; }, body2: { immovable: any; deltaAbsX: () => any; deltaX: () => number; embedded: boolean; x: number; checkCollision: { backX: boolean; frontX: boolean; }; touching: { none: boolean; backX: boolean; frontX: boolean; }; widthX: number; overlapX: any; customSeparateX: any; velocity: { x: number; }; mass: number; bounce: { x: number; }; }, overlapOnly: any) {
 		//  Can't separate two immovable bodies
 		if (body1.immovable && body2.immovable) {
 			return false;
@@ -499,7 +528,7 @@ export default class World {
 	 * @param {boolean} overlapOnly - If true the bodies will only have their overlap data set, no separation or exchange of velocity will take place.
 	 * @return {boolean} Returns true if the bodies were separated, otherwise false.
 	 */
-	separateY(body1, body2, overlapOnly) {
+	separateY(body1: { immovable: any; deltaAbsY: () => any; deltaY: () => number; embedded: boolean; frontY: number; checkCollision: { frontY: boolean; backY: boolean; }; touching: { none: boolean; frontY: boolean; backY: boolean; }; y: number; overlapY: any; customSeparateY: any; velocity: { y: number; }; mass: number; bounce: { y: number; }; }, body2: { immovable: any; deltaAbsY: () => any; deltaY: () => number; embedded: boolean; y: number; checkCollision: { backY: boolean; frontY: boolean; }; touching: { none: boolean; backY: boolean; frontY: boolean; }; widthY: number; overlapY: any; customSeparateY: any; velocity: { y: number; }; mass: number; bounce: { y: number; }; }, overlapOnly: any) {
 		//  Can't separate two immovable bodies
 		if (body1.immovable && body2.immovable) {
 			return false;
@@ -601,7 +630,7 @@ export default class World {
 	 * @param {boolean} overlapOnly - If true the bodies will only have their overlap data set, no separation or exchange of velocity will take place.
 	 * @return {boolean} Returns true if the bodies were separated, otherwise false.
 	 */
-	separateZ(body1, body2, overlapOnly) {
+	separateZ(body1: { immovable: any; deltaAbsZ: () => any; deltaZ: () => number; embedded: boolean; top: number; checkCollision: { down: boolean; up: boolean; }; touching: { none: boolean; down: boolean; up: boolean; }; z: number; overlapZ: any; customSeparateY: any; velocity: { z: number; }; mass: number; bounce: { z: number; }; x: number; y: number; moves: any; prev: { x: number; y: number; }; }, body2: { immovable: any; deltaAbsZ: () => any; deltaZ: () => number; embedded: boolean; z: number; checkCollision: { up: boolean; down: boolean; }; touching: { none: boolean; up: boolean; down: boolean; }; top: number; overlapZ: any; customSeparateZ: any; velocity: { z: number; }; mass: number; bounce: { z: number; }; moves: any; x: number; prev: { x: number; y: number; }; y: number; }, overlapOnly: any) {
 		//  Can't separate two immovable or non-existing bodys
 		if (body1.immovable && body2.immovable) {
 			return false;
@@ -720,7 +749,7 @@ export default class World {
 	 * @param {object} [callbackContext] - The context in which to run the callbacks.
 	 * @return {boolean} True if an overlap occured otherwise false.
 	 */
-	overlap(object1, object2, overlapCallback = null, processCallback = null, callbackContext) {
+	overlap(object1: any, object2: string | any[], overlapCallback = null, processCallback = null, callbackContext: null) {
 		callbackContext = callbackContext || overlapCallback;
 
 		this._result = false;
@@ -768,7 +797,7 @@ export default class World {
 	 * @param {object} [callbackContext] - The context in which to run the callbacks.
 	 * @return {boolean} True if a collision occured otherwise false.
 	 */
-	collide(object1, object2, collideCallback = null, processCallback = null, callbackContext) {
+	collide(object1: any, object2: string | any[], collideCallback = null, processCallback = null, callbackContext: null) {
 		callbackContext = callbackContext || collideCallback;
 
 		this._result = false;
@@ -812,12 +841,12 @@ export default class World {
 	 * @param {boolean} overlapOnly - Just run an overlap or a full collision.
 	 */
 	collideHandler(
-		object1,
-		object2,
-		collideCallback,
-		processCallback,
-		callbackContext,
-		overlapOnly,
+		object1: { type: string; },
+		object2: { type: string; },
+		collideCallback: null,
+		processCallback: null,
+		callbackContext: any,
+		overlapOnly: boolean,
 	) {
 		//  Only collide valid objects
 		if (!object2 && object1.type === Phaser.GROUP) {
@@ -893,12 +922,12 @@ export default class World {
 	 * @return {boolean} True if there was a collision, otherwise false.
 	 */
 	collideSpriteVsSprite(
-		sprite1,
-		sprite2,
-		collideCallback,
-		processCallback,
-		callbackContext,
-		overlapOnly,
+		sprite1: { body: any; },
+		sprite2: { body: any; },
+		collideCallback: { call: (arg0: any, arg1: any, arg2: any) => void; },
+		processCallback: any,
+		callbackContext: any,
+		overlapOnly: any,
 	) {
 		if (!sprite1.body || !sprite2.body) {
 			return false;
@@ -930,12 +959,12 @@ export default class World {
 	 * @param {boolean} overlapOnly - Just run an overlap or a full collision.
 	 */
 	collideSpriteVsGroup(
-		sprite,
-		group,
-		collideCallback,
-		processCallback,
-		callbackContext,
-		overlapOnly,
+		sprite: { body: { skipTree: any; }; },
+		group: { children: { size: number; entries: any[]; }; },
+		collideCallback: { call: (arg0: any, arg1: any, arg2: any) => void; },
+		processCallback: any,
+		callbackContext: any,
+		overlapOnly: any,
 	) {
 		var i, len;
 
@@ -1009,7 +1038,7 @@ export default class World {
 	 * @param {boolean} overlapOnly - Just run an overlap or a full collision.
 	 * @return {boolean} True if there was a collision, otherwise false.
 	 */
-	collideGroupVsSelf(group, collideCallback, processCallback, callbackContext, overlapOnly) {
+	collideGroupVsSelf(group: { children: { size: number; entries: any; }; }, collideCallback: any, processCallback: any, callbackContext: any, overlapOnly: any) {
 		if (group.children.size === 0) {
 			return;
 		}
@@ -1049,12 +1078,12 @@ export default class World {
 	 * @param {boolean} overlapOnly - Just run an overlap or a full collision.
 	 */
 	collideGroupVsGroup(
-		group1,
-		group2,
-		collideCallback,
-		processCallback,
-		callbackContext,
-		overlapOnly,
+		group1: { children: { size: number; entries: any[]; }; },
+		group2: { children: { size: number; }; },
+		collideCallback: any,
+		processCallback: any,
+		callbackContext: any,
+		overlapOnly: any,
 	) {
 		if (group1.children.size === 0 || group2.children.size === 0) {
 			return;
@@ -1078,7 +1107,7 @@ export default class World {
 	 * @method IsoPhysics#updateMotion
 	 * @param {Body} body - The Body object to be updated.
 	 */
-	updateMotion(body, delta) {
+	updateMotion(body: { angularVelocity: number; angularAcceleration: any; angularDrag: any; maxAngular: any; rotation: number; velocity: { x: any; y: any; z: any; }; acceleration: { x: any; y: any; z: any; }; drag: { x: any; y: any; z: any; }; maxVelocity: { x: any; y: any; z: any; }; }, delta: number) {
 		this._velocityDelta =
 			this.computeVelocity(
 				0,
@@ -1120,7 +1149,7 @@ export default class World {
 		);
 	}
 
-	update(time, delta) {
+	update(time: any, delta: any) {
 		const bodies = this.bodies.entries;
 		const len = bodies.length;
 		let i;

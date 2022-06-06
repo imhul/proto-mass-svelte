@@ -1,10 +1,90 @@
-$transparent: rgba(0, 0, 0, 0);
-$game-color-darkest: #0f2a3f;
-$game-color-darker: #20394f;
-$game-color-dark: #4e495f;
-$game-color-warn: #816271;
-$game-color-light: #997577;
-$game-color: #c3a38a;
-$game-color-lightest: #f6d6bd;
-$game-color-danger: #811350;
-$game-color-success: #46a41b;
+// media
+$max-width-xx-small: 374.98px;
+$max-width-x-small: 414.98px;
+$max-width-small: 599.98px;
+$max-width-medium: 767.98px;
+$max-width-tablet: 991.98px;
+$max-width-large: 1023.98px;
+$max-width-x-large: 1199.98px;
+$max-width-xx-large: 1599.98px;
+
+// mobile-first
+$min-width-xx-small: 375px;
+$min-width-x-small: 415px;
+$min-width-small: 600px;
+$min-width-medium: 768px;
+$min-width-tablet: 992px;
+$min-width-large: 1024px;
+$min-width-x-large: 1200px;
+$min-width-xx-large: 1600px;
+
+:root {
+
+    // fonts
+
+    // colors
+    --transparent: rgba(0, 0, 0, 0);
+    --game-color-darkest: #0f2a3f;
+    --game-color-darker: #20394f;
+    --game-color-dark: #4e495f;
+    --game-color-warn: #816271;
+    --game-color-light: #997577;
+    --game-color: #c3a38a;
+    --game-color-lightest: #f6d6bd;
+    --game-color-danger: #811350;
+    --game-color-success: #46a41b;
+
+    // font-weight
+	--weight-100: 100;
+	--weight-200: 200;
+	--weight-300: 300;
+	--weight-400: 400;
+	--weight-500: 500;
+	--weight-600: 600;
+	--weight-700: 700;
+	--weight-800: 800;
+	--weight-900: 900;
+
+	// sizes
+	--zero: 0;
+	--size-1: 0.0625rem;
+	--size-2: 0.125rem;
+	--size-4: 0.25rem;
+	--size-6: 0.375rem;
+	--size-8: 0.5rem;
+	--size-10: 0.625rem;
+	--size-12: 0.75rem;
+	--size-14: 0.875rem;
+	--size-16: 1rem;
+	--size-16n: -1rem;
+	--size-18: 1.125rem;
+	--size-20: 1.25rem;
+	--size-20n: -1.25rem;
+	--size-22: 1.375rem;
+	--size-24: 1.5rem;
+	--size-26: 1.615rem;
+	--size-28: 1.75rem;
+	--size-28n: -1.75rem;
+	--size-30: 1.875rem;
+	--size-32: 2rem;
+	--size-34: 2.125rem;
+	--size-36: 2.25rem;
+	--size-38: 2.375rem;
+	--size-40: 2.5rem;
+	--size-40n: -2.5rem;
+	--size-44: 2.75rem;
+	--size-45: 2.8125rem;
+	--size-46: 2.875rem;
+	--size-48: 3rem;
+	--size-50: 3.125rem;
+	--size-52: 3.25rem;
+	--size-56: 3.5rem;
+	--size-58: 3.625rem;
+	--size-60: 3.75rem;
+
+    // border-radius
+	--br-rounded: 50%;
+
+    // miscellaneous
+	--inherit: inherit;
+}
