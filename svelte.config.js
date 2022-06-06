@@ -22,9 +22,6 @@ const config = {
 			postcss: true,
 			preserve: ['ld+json', 'module'],
 			typescript: true,
-			scss: {
-				prependData: '@use "src/variables.scss" as *;',
-			},
 		}),
 	],
 
@@ -56,9 +53,6 @@ const config = {
 			css: {
 				preprocessorOptions: {
 					postcss: true,
-					scss: {
-						additionalData: '@use "src/variables.scss" as *;',
-					},
 				},
 			},
 		}),
