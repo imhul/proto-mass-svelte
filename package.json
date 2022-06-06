@@ -1,42 +1,28 @@
 {
-	"name": "sveltekit-starter",
-	"description": "A sveltekit starter project with typescript, postcss, scss, and storybook setup",
-	"version": "1.0.0",
+	"name": "proto-mass",
+	"description": "Indirect Control Pixel-Art Svelte-based Sandbox Browser Game",
+	"version": "0.0.1",
 	"author": {
 		"name": "Tkachuk Zakhar",
-		"url": "https://navneetsharma.xyz",
+		"url": "https://proto-mass.netlify.app/",
 		"email": "blashirk@gmail.com"
 	},
 	"license": "MIT",
 	"keywords": [
 		"sveltekit",
+		"svelte based",
 		"typescript",
 		"svelte",
 		"SSR",
-		"svelte-starter",
-		"sveltekit-starter",
-		"svelte-boilerplate",
-		"sveltekit-boilerplate",
-		"svelte boilerplate",
-		"sveltekit boilerplate",
-		"svelte-tailwind-boilerplate",
-		"svelte tailwind boilerplate",
-		"sveltekit tailwind boilerplate",
-		"svelte-ssr-starter",
-		"sveltekit-ssr-starter",
-		"svelte-pwa-starter",
-		"sveltekit-pwa-starter",
-		"starter-template",
-		"svelte ssr starter",
-		"sveltekit ssr starter",
-		"svelte pwa starter",
-		"sveltekit pwa starter",
-		"starter template",
-		"template"
+		"Phaser",
+		"svelte-phaser",
+		"pixel art",
+		"sandbox",
+		"game"
 	],
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/navneetsharmaui/sveltekit-starter.git"
+		"url": "git+https://github.com:imhul/proto-mass-svelte.git"
 	},
 	"scripts": {
 		"prebuild": "rimraf .svelte-kit && rimraf build && rimraf .vercel_build_output",
