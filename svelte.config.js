@@ -57,10 +57,10 @@ const config = {
 				preprocessorOptions: {
 					postcss: true,
 					scss: {
-						additionalData: '@use "src/variables.scss" as *;'
-					}
-				}
-			}
+						additionalData: '@use "src/variables.scss" as *;',
+					},
+				},
+			},
 		}),
 	},
 };

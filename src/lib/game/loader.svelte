@@ -213,7 +213,6 @@
 		scene.isoPhysics.world.gravity.setTo(0, 0, -500);
 		scene.isoPhysics.projector.origin.setTo(0.5, 0);
 
-
 		// Add first cube to scene
 		cameraControls(scene);
 		spawnTiles(scene);
@@ -245,10 +244,8 @@
 					texture="stars1"
 					tilePositionX="{tilePositionX}"
 				/>
-				<Container x={200} y={200} width={100} height={100} depth={-30}>
-					{#each expression as name}
-					
-					{/each}
+				<Container x="{200}" y="{200}" width="{100}" height="{100}" depth="{-30}">
+					{#each expression as name}{/each}
 				</Container>
 			</Scene>
 		{/if}
