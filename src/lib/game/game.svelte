@@ -6,11 +6,13 @@
 	import type { ICube } from '$lib/types/objects';
 	// store
 	import user from '$store/auth';
+	import { unit, units } from '$store/unit';
 	// components
-	import { Scene, Container, TileSprite } from 'svelte-phaser';
-	import { IsoPlugin, IsoPhysics } from '$lib/iso';
+	import { Scene, TileSprite } from 'svelte-phaser';
+	import { IsoPlugin, IsoPhysics, Body } from '$lib/iso';
 	// utils
 	import { getMap } from '$utils/getMap';
+	import { v5 as uuidv5 } from 'uuid';
 	// assets
 	import CubeSprite from '$assets/sprites/cube/isometric_pixel_0123.png';
 	import Tile0 from '$assets/sprites/cube/isometric_pixel_0054.png';
@@ -33,9 +35,13 @@
 	let tile3PositionX = 0;
 	const MIN_WIDTH_FOR_ZOOM = 1500;
 	const GROWTH_MAX = 20;
-	const GROWTH_COOF = 11;
+	const GROWTH_COOF = 1;
+	const idLength = new Array(16);
+	const hover = 0x86bfda;
 	$: totalCubes = 0;
 	$: timeout = GROWTH_COOF * 1000 * (totalCubes <= 1 ? 1 : totalCubes);
+	// $: console.info('$unit: ', $unit);
+	// $: console.info('$units: ', $units);
 
 	const step = () => {
 		tile1PositionX += 0.1;
@@ -77,7 +83,6 @@
 		camera.setZoom(w > MIN_WIDTH_FOR_ZOOM ? 1.5 : 1);
 
 		scene.update = function (_, delta) {
-			// console.info("zoom: ", scene.cameras.main.zoom)
 			controls.update(delta);
 		};
 	};
@@ -125,10 +130,20 @@
 		// console.info("tiles: ", tiles);
 	};
 
+	const roam = (cube: ICube) => {
+		const timeoutDir = Math.abs(Math.trunc(Math.random() * 2000 - 50));
+		const isPause = Math.random() > 0.5;
+		setTimeout(() => {
+			const randomX = Math.trunc(Math.random() * 100 - 50);
+			const randomY = Math.trunc(Math.random() * 100 - 50);
+			cube.body.velocity.setTo(isPause ? 0 : randomX, isPause ? 0 : randomY, 0);
+			roam(cube);
+		}, 1000 + timeoutDir);
+	};
+
 	const createCube = (scene: Phaser.Scene) => {
 		totalCubes += 1;
 		let cube: ICube;
-		let currentCube: ICube | null;
 
 		// Add a cube which is way above the ground
 		cube = scene.add.isoSprite(810, 810, 600, 'cube', scene.isoGroup);
@@ -137,31 +152,42 @@
 
 		// Collide with the world bounds so it doesn't go falling forever or fly off the screen!
 		cube.body.collideWorldBounds = true;
+		cube.id = uuidv5('cube-' + totalCubes, idLength);
 
 		// Add a full bounce on the x and y axes, and a bit on the z axis.
 		cube.body.bounce.set(1, 1, 0.2);
-
-		// Send the cubes off in random x and y directions! Wheee!
-		const randomX = Math.trunc(Math.random() * 400 - 50);
-		const randomY = Math.trunc(Math.random() * 400 - 50);
-		cube.body.velocity.setTo(randomX, randomY, 0);
 		cube.setInteractive();
 
-		// Make the camera follow the player.
 		const camera = scene.cameras.main;
+		// console.info('touching: ', cube.body.touching)
 
 		cube.on('pointerdown', function () {
-			if (currentCube) {
-				currentCube = null;
-				this.clearTint();
-				camera.stopFollow(); // Make the camera stop follow the player.
+			const check = () => {
+				unit.set(cube);
+				$unit.setTint(hover);
+				camera.startFollow($unit);
+			};
+
+			const kill = () => {
+				$unit.clearTint();
+				camera.stopFollow();
+				unit.set(null);
+			};
+
+			if ($unit?.id) {
+				if (cube.id !== $unit.id) {
+					kill();
+					check();
+				} else {
+					kill();
+				}
 			} else {
-				currentCube = this;
-				this.setTint(0x86bfda);
-				camera.startFollow(this); // Make the camera follow the player.
+				check();
 			}
 		});
 
+		roam(cube);
+		units.set([...$units, cube]);
 		spawnCubes(scene);
 	};
 
@@ -216,7 +242,6 @@
 <Scene
 	key="main"
 	mapAdd="{{ isoPlugin: 'iso', isoPhysics: 'isoPhysics' }}"
-	physics="{{ default: 'arcade' }}"
 	preload="{preload}"
 	create="{create}"
 	active="{$user.isLoggedIn}"
