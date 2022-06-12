@@ -2,7 +2,7 @@
 	import { getContext } from 'svelte';
 	import { goto } from '$app/navigation';
 	// store
-	import user from '$store/auth';
+	import user from '$store/user/auth';
 	// components
 	import AuthModal from '$ui/auth.svelte';
 

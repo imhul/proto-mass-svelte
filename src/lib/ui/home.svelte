@@ -18,5 +18,6 @@
 		align-items: center;
 		width: 100%;
 		height: 100%;
+		background: url('/images/bg.gif') no-repeat 50% 50%;
 	}
 </style>

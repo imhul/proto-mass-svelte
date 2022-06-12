@@ -4,9 +4,12 @@
 	// types
 	import type Phaser from 'phaser';
 	// store
-	import user from '$store/auth';
+	import user from '$store/user/auth';
 	// components
 	import { Game } from 'svelte-phaser';
+	import Header from '$game/ui/header.svelte';
+	import AsideL from '$game/ui/aside-left.svelte';
+	import AsideR from '$game/ui/aside-right.svelte';
 	import Scenario from '$game/game.svelte';
 
 	$: !$user.isLoggedIn && goto('/');
@@ -18,6 +21,9 @@
 
 <svelte:window bind:innerHeight="{h}" bind:innerWidth="{w}" on:keypress="{onKeypress}" />
 
+<Header />
+<AsideL />
+<AsideR />
 {#if browser && w > 0 && h > 0}
 	<Game bind:instance="{game}" width="{w}" height="{h}" backgroundColor="#000">
 		{#if game}

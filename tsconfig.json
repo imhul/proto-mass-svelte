@@ -39,7 +39,8 @@
 			"$utils": ["src/lib/utils/*"],
 			"$ui": ["src/lib/ui/*"],
 			"$game": ["src/lib/game/*"],
-			"$assets": ["src/lib/assets/*"]
+			"$assets": ["src/lib/assets/*"],
+			"$types": ["src/lib/types/*"]
 		}
 	},
 	"include": [

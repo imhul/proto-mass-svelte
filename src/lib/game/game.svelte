@@ -3,13 +3,14 @@
 	import Phaser from 'phaser';
 	import { goto } from '$app/navigation';
 	// types
-	import type { ICube } from '$lib/types/objects';
+	import type { ICube } from '$types/objects';
 	// store
-	import user from '$store/auth';
-	import { unit, units } from '$store/unit';
+	import user from '$store/user/auth';
+	import { unit, units } from '$store/game/unit';
+	import { messages } from '$store/game/notify';
 	// components
 	import { Scene, TileSprite } from 'svelte-phaser';
-	import { IsoPlugin, IsoPhysics, Body } from '$lib/iso';
+	import { IsoPlugin, IsoPhysics, IsoSprite } from '$lib/iso';
 	// utils
 	import { getMap } from '$utils/getMap';
 	import { v5 as uuidv5 } from 'uuid';
@@ -88,7 +89,7 @@
 	};
 
 	const spawnTiles = (scene: Phaser.Scene) => {
-		let tile;
+		let tile: IsoSprite;
 		let i = 0;
 		const offsetX = 150;
 		const offsetY = 150;
@@ -97,19 +98,15 @@
 		const mapSizeX = mapStep * mapCells + offsetX;
 		const mapSizeY = mapStep * mapCells + offsetY;
 
-		const tiles = [];
+		const tiles: IsoSprite[] = [];
 
 		for (var xx = offsetX; xx < mapSizeX; xx += mapStep) {
 			for (var yy = offsetY; yy < mapSizeY; yy += mapStep) {
 				i++;
+				const tileId = getMap.flat(Infinity)[i - 1];
 
-				tile = scene.add.isoSprite(
-					xx,
-					yy,
-					0,
-					'tile-' + getMap.flat(Infinity)[i - 1],
-					scene.isoGroup,
-				);
+				tile = scene.add.isoSprite(xx, yy, 0, 'tile-' + tileId, scene.isoGroup);
+				tile.name = 'ground-' + tileId;
 				tile.isoZ -= 30;
 				tile.setInteractive();
 
@@ -121,6 +118,18 @@
 				tile.on('pointerout', function () {
 					this.clearTint();
 					this.isoZ -= 5;
+				});
+
+				tile.on('pointerdown', function () {
+					console.info('tile: ', this);
+					messages.set([
+						{
+							id: 'tile-' + tileId,
+							title: 'Name: ' + this.name,
+							aside: 'right',
+							message: `x: ${this._isoPosition.x}, y: ${this._isoPosition.y}`,
+						},
+					]);
 				});
 
 				tiles.push(tile);
@@ -166,6 +175,14 @@
 				unit.set(cube);
 				$unit.setTint(hover);
 				camera.startFollow($unit);
+				messages.set([
+					{
+						id: 'cube-' + cube.id,
+						title: 'Name: ' + 'The Cube',
+						aside: 'right',
+						message: `x: ${$unit._isoPosition.x}, y: ${$unit._isoPosition.y}`,
+					},
+				]);
 			};
 
 			const kill = () => {

@@ -1,3 +1,4 @@
+// @ts-nocheck
 /**
 * The MIT License (MIT)
 

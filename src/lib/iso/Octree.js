@@ -1,3 +1,4 @@
+// @ts-nocheck
 import Cube from './Cube';
 
 /**

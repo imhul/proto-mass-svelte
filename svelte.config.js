@@ -43,6 +43,7 @@ const config = {
 					$ui: resolve(__dirname, './src/lib/ui'),
 					$utils: resolve(__dirname, './src/lib/utils'),
 					$assets: resolve(__dirname, './src/lib/assets'),
+					$types: resolve(__dirname, './src/lib/types'),
 				},
 			},
 			envPrefix: ['VITE_', 'PROTO_MASS_'],
