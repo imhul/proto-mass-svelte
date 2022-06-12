@@ -31,7 +31,6 @@
 	let tile1PositionX = 0;
 	let tile2PositionX = 0;
 	let tile3PositionX = 0;
-	let container: Phaser.GameObjects.Container | undefined; // TODO: how to wrap tiles
 	const MIN_WIDTH_FOR_ZOOM = 1500;
 	const GROWTH_MAX = 20;
 	const GROWTH_COOF = 11;
@@ -261,14 +260,5 @@
 		originY="{0}"
 		texture="starship"
 		tilePositionX="{tile1PositionX}"
-	/>
-	<!-- TODO: how to wrap tiles -->
-	<Container
-		bind:instance="{container}"
-		x="{0}"
-		y="{0}"
-		width="{100}"
-		height="{100}"
-		depth="{-30}"
 	/>
 </Scene>
