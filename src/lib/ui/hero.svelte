@@ -1,4 +1,5 @@
-<h1>Proto-Mass</h1>
+<h1>Proto-Mass<br /><i class="icon-i1" /></h1>
+
 
 <style lang="scss">
 	h1 {
