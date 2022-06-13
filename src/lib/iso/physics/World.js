@@ -10,7 +10,6 @@ const { GameObjects, Structs } = Phaser;
 
 export default class World {
 	constructor(scene) {
-
 		/**
 		 * Bodies
 		 *
@@ -42,7 +41,7 @@ export default class World {
 			frontX: true,
 			frontY: true,
 			backX: true,
-			backY: true
+			backY: true,
 		};
 
 		/**
@@ -81,7 +80,7 @@ export default class World {
 			this.bounds.widthY,
 			this.bounds.height,
 			this.maxObjects,
-			this.maxLevels
+			this.maxLevels,
 		);
 
 		//  Avoid gc spikes by caching these values for re-use
@@ -192,7 +191,11 @@ export default class World {
 				} else {
 					this.enableBody(object[i]);
 
-					if (children && object[i].hasOwnProperty('children') && object[i].children.length > 0) {
+					if (
+						children &&
+						object[i].hasOwnProperty('children') &&
+						object[i].children.length > 0
+					) {
 						this.enable(object[i], true);
 					}
 				}
@@ -315,7 +318,10 @@ export default class World {
 		}
 
 		//  They overlap. Is there a custom process callback? If it returns true then we can carry on, otherwise we should abort.
-		if (processCallback && processCallback.call(callbackContext, body1.sprite, body2.sprite) === false) {
+		if (
+			processCallback &&
+			processCallback.call(callbackContext, body1.sprite, body2.sprite) === false
+		) {
 			return false;
 		}
 
@@ -326,10 +332,21 @@ export default class World {
 
 		//  Do we separate on X and Y first?
 		//  If we weren't having to carry around so much legacy baggage with us, we could do this properly. But alas ...
-		if (this.forceXY || Math.abs(this.gravity.z + body1.gravity.z) < Math.abs(this.gravity.x + body1.gravity.x) || Math.abs(this.gravity.z + body1.gravity.z) < Math.abs(this.gravity.y + body1.gravity.y)) {
-			this._result = (this.separateX(body1, body2, overlapOnly) || this.separateY(body1, body2, overlapOnly) || this.separateZ(body1, body2, overlapOnly));
+		if (
+			this.forceXY ||
+			Math.abs(this.gravity.z + body1.gravity.z) <
+				Math.abs(this.gravity.x + body1.gravity.x) ||
+			Math.abs(this.gravity.z + body1.gravity.z) < Math.abs(this.gravity.y + body1.gravity.y)
+		) {
+			this._result =
+				this.separateX(body1, body2, overlapOnly) ||
+				this.separateY(body1, body2, overlapOnly) ||
+				this.separateZ(body1, body2, overlapOnly);
 		} else {
-			this._result = (this.separateZ(body1, body2, overlapOnly) || this.separateX(body1, body2, overlapOnly) || this.separateY(body1, body2, overlapOnly));
+			this._result =
+				this.separateZ(body1, body2, overlapOnly) ||
+				this.separateX(body1, body2, overlapOnly) ||
+				this.separateY(body1, body2, overlapOnly);
 		}
 
 		return this._result;
@@ -399,7 +416,11 @@ export default class World {
 			//  Body1 is moving forward and/or Body2 is moving back
 			this._overlap = body1.frontX - body2.x;
 
-			if ((this._overlap > this._maxOverlap) || body1.checkCollision.frontX === false || body2.checkCollision.backX === false) {
+			if (
+				this._overlap > this._maxOverlap ||
+				body1.checkCollision.frontX === false ||
+				body2.checkCollision.backX === false
+			) {
 				this._overlap = 0;
 			} else {
 				body1.touching.none = false;
@@ -411,7 +432,11 @@ export default class World {
 			//  Body1 is moving back and/or Body2 is moving forward
 			this._overlap = body1.x - body2.widthX - body2.x;
 
-			if ((-this._overlap > this._maxOverlap) || body1.checkCollision.backX === false || body2.checkCollision.frontX === false) {
+			if (
+				-this._overlap > this._maxOverlap ||
+				body1.checkCollision.backX === false ||
+				body2.checkCollision.frontX === false
+			) {
 				this._overlap = 0;
 			} else {
 				body1.touching.none = false;
@@ -439,8 +464,12 @@ export default class World {
 				body1.x = body1.x - this._overlap;
 				body2.x += this._overlap;
 
-				this._newVelocity1 = Math.sqrt((this._velocity2 * this._velocity2 * body2.mass) / body1.mass) * ((this._velocity2 > 0) ? 1 : -1);
-				this._newVelocity2 = Math.sqrt((this._velocity1 * this._velocity1 * body1.mass) / body2.mass) * ((this._velocity1 > 0) ? 1 : -1);
+				this._newVelocity1 =
+					Math.sqrt((this._velocity2 * this._velocity2 * body2.mass) / body1.mass) *
+					(this._velocity2 > 0 ? 1 : -1);
+				this._newVelocity2 =
+					Math.sqrt((this._velocity1 * this._velocity1 * body1.mass) / body2.mass) *
+					(this._velocity1 > 0 ? 1 : -1);
 				this._average = (this._newVelocity1 + this._newVelocity2) * 0.5;
 				this._newVelocity1 -= this._average;
 				this._newVelocity2 -= this._average;
@@ -489,7 +518,11 @@ export default class World {
 			//  Body1 is moving forward and/or Body2 is moving back
 			this._overlap = body1.frontY - body2.y;
 
-			if ((this._overlap > this._maxOverlap) || body1.checkCollision.frontY === false || body2.checkCollision.backY === false) {
+			if (
+				this._overlap > this._maxOverlap ||
+				body1.checkCollision.frontY === false ||
+				body2.checkCollision.backY === false
+			) {
 				this._overlap = 0;
 			} else {
 				body1.touching.none = false;
@@ -501,7 +534,11 @@ export default class World {
 			//  Body1 is moving back and/or Body2 is moving forward
 			this._overlap = body1.y - body2.widthY - body2.y;
 
-			if ((-this._overlap > this._maxOverlap) || body1.checkCollision.backY === false || body2.checkCollision.frontY === false) {
+			if (
+				-this._overlap > this._maxOverlap ||
+				body1.checkCollision.backY === false ||
+				body2.checkCollision.frontY === false
+			) {
 				this._overlap = 0;
 			} else {
 				body1.touching.none = false;
@@ -529,8 +566,12 @@ export default class World {
 				body1.y = body1.y - this._overlap;
 				body2.y += this._overlap;
 
-				this._newVelocity1 = Math.sqrt((this._velocity2 * this._velocity2 * body2.mass) / body1.mass) * ((this._velocity2 > 0) ? 1 : -1);
-				this._newVelocity2 = Math.sqrt((this._velocity1 * this._velocity1 * body1.mass) / body2.mass) * ((this._velocity1 > 0) ? 1 : -1);
+				this._newVelocity1 =
+					Math.sqrt((this._velocity2 * this._velocity2 * body2.mass) / body1.mass) *
+					(this._velocity2 > 0 ? 1 : -1);
+				this._newVelocity2 =
+					Math.sqrt((this._velocity1 * this._velocity1 * body1.mass) / body2.mass) *
+					(this._velocity1 > 0 ? 1 : -1);
 				this._average = (this._newVelocity1 + this._newVelocity2) * 0.5;
 				this._newVelocity1 -= this._average;
 				this._newVelocity2 -= this._average;
@@ -579,7 +620,11 @@ export default class World {
 			//  Body1 is moving down and/or Body2 is moving up
 			this._overlap = body1.top - body2.z;
 
-			if ((this._overlap > this._maxOverlap) || body1.checkCollision.down === false || body2.checkCollision.up === false) {
+			if (
+				this._overlap > this._maxOverlap ||
+				body1.checkCollision.down === false ||
+				body2.checkCollision.up === false
+			) {
 				this._overlap = 0;
 			} else {
 				body1.touching.none = false;
@@ -591,7 +636,11 @@ export default class World {
 			//  Body1 is moving up and/or Body2 is moving down
 			this._overlap = body1.z - body2.top;
 
-			if ((-this._overlap > this._maxOverlap) || body1.checkCollision.up === false || body2.checkCollision.down === false) {
+			if (
+				-this._overlap > this._maxOverlap ||
+				body1.checkCollision.up === false ||
+				body2.checkCollision.down === false
+			) {
 				this._overlap = 0;
 			} else {
 				body1.touching.none = false;
@@ -619,8 +668,12 @@ export default class World {
 				body1.z = body1.z - this._overlap;
 				body2.z += this._overlap;
 
-				this._newVelocity1 = Math.sqrt((this._velocity2 * this._velocity2 * body2.mass) / body1.mass) * ((this._velocity2 > 0) ? 1 : -1);
-				this._newVelocity2 = Math.sqrt((this._velocity1 * this._velocity1 * body1.mass) / body2.mass) * ((this._velocity1 > 0) ? 1 : -1);
+				this._newVelocity1 =
+					Math.sqrt((this._velocity2 * this._velocity2 * body2.mass) / body1.mass) *
+					(this._velocity2 > 0 ? 1 : -1);
+				this._newVelocity2 =
+					Math.sqrt((this._velocity1 * this._velocity1 * body1.mass) / body2.mass) *
+					(this._velocity1 > 0 ? 1 : -1);
 				this._average = (this._newVelocity1 + this._newVelocity2) * 0.5;
 				this._newVelocity1 -= this._average;
 				this._newVelocity2 -= this._average;
@@ -676,13 +729,27 @@ export default class World {
 
 		if (Array.isArray(object2)) {
 			for (var i = 0, len = object2.length; i < len; i++) {
-				this.collideHandler(object1, object2[i], overlapCallback, processCallback, callbackContext, true);
+				this.collideHandler(
+					object1,
+					object2[i],
+					overlapCallback,
+					processCallback,
+					callbackContext,
+					true,
+				);
 			}
 		} else {
-			this.collideHandler(object1, object2, overlapCallback, processCallback, callbackContext, true);
+			this.collideHandler(
+				object1,
+				object2,
+				overlapCallback,
+				processCallback,
+				callbackContext,
+				true,
+			);
 		}
 
-		return (this._total > 0);
+		return this._total > 0;
 	}
 
 	/**
@@ -710,14 +777,27 @@ export default class World {
 
 		if (Array.isArray(object2)) {
 			for (var i = 0, len = object2.length; i < len; i++) {
-				this.collideHandler(object1, object2[i], collideCallback, processCallback, callbackContext, false);
+				this.collideHandler(
+					object1,
+					object2[i],
+					collideCallback,
+					processCallback,
+					callbackContext,
+					false,
+				);
 			}
-		}
-		else {
-			this.collideHandler(object1, object2, collideCallback, processCallback, callbackContext, false);
+		} else {
+			this.collideHandler(
+				object1,
+				object2,
+				collideCallback,
+				processCallback,
+				callbackContext,
+				false,
+			);
 		}
 
-		return (this._total > 0);
+		return this._total > 0;
 	}
 
 	/**
@@ -732,10 +812,23 @@ export default class World {
 	 * @param {object} callbackContext - The context in which to run the callbacks.
 	 * @param {boolean} overlapOnly - Just run an overlap or a full collision.
 	 */
-	collideHandler(object1, object2, collideCallback, processCallback, callbackContext, overlapOnly) {
+	collideHandler(
+		object1,
+		object2,
+		collideCallback,
+		processCallback,
+		callbackContext,
+		overlapOnly,
+	) {
 		//  Only collide valid objects
 		if (!object2 && object1.type === Phaser.GROUP) {
-			this.collideGroupVsSelf(object1, collideCallback, processCallback, callbackContext, overlapOnly);
+			this.collideGroupVsSelf(
+				object1,
+				collideCallback,
+				processCallback,
+				callbackContext,
+				overlapOnly,
+			);
 			return;
 		}
 
@@ -743,17 +836,45 @@ export default class World {
 			//  ISOSPRITES
 			if (object1.type === ISOSPRITE) {
 				if (object2.type === ISOSPRITE) {
-					this.collideSpriteVsSprite(object1, object2, collideCallback, processCallback, callbackContext, overlapOnly);
+					this.collideSpriteVsSprite(
+						object1,
+						object2,
+						collideCallback,
+						processCallback,
+						callbackContext,
+						overlapOnly,
+					);
 				} else if (object2.type === Phaser.GROUP) {
-					this.collideSpriteVsGroup(object1, object2, collideCallback, processCallback, callbackContext, overlapOnly);
+					this.collideSpriteVsGroup(
+						object1,
+						object2,
+						collideCallback,
+						processCallback,
+						callbackContext,
+						overlapOnly,
+					);
 				}
 			}
 			//  GROUPS
 			else if (object1.type === Phaser.GROUP) {
 				if (object2.type === ISOSPRITE) {
-					this.collideSpriteVsGroup(object2, object1, collideCallback, processCallback, callbackContext, overlapOnly);
+					this.collideSpriteVsGroup(
+						object2,
+						object1,
+						collideCallback,
+						processCallback,
+						callbackContext,
+						overlapOnly,
+					);
 				} else if (object2.type === Phaser.GROUP) {
-					this.collideGroupVsGroup(object1, object2, collideCallback, processCallback, callbackContext, overlapOnly);
+					this.collideGroupVsGroup(
+						object1,
+						object2,
+						collideCallback,
+						processCallback,
+						callbackContext,
+						overlapOnly,
+					);
 				}
 			}
 		}
@@ -772,10 +893,21 @@ export default class World {
 	 * @param {boolean} overlapOnly - Just run an overlap or a full collision.
 	 * @return {boolean} True if there was a collision, otherwise false.
 	 */
-	collideSpriteVsSprite(sprite1, sprite2, collideCallback, processCallback, callbackContext, overlapOnly) {
-		if (!sprite1.body || !sprite2.body) { return false; }
+	collideSpriteVsSprite(
+		sprite1,
+		sprite2,
+		collideCallback,
+		processCallback,
+		callbackContext,
+		overlapOnly,
+	) {
+		if (!sprite1.body || !sprite2.body) {
+			return false;
+		}
 
-		if (this.separate(sprite1.body, sprite2.body, processCallback, callbackContext, overlapOnly)) {
+		if (
+			this.separate(sprite1.body, sprite2.body, processCallback, callbackContext, overlapOnly)
+		) {
 			if (collideCallback) {
 				collideCallback.call(callbackContext, sprite1, sprite2);
 			}
@@ -798,23 +930,48 @@ export default class World {
 	 * @param {object} callbackContext - The context in which to run the callbacks.
 	 * @param {boolean} overlapOnly - Just run an overlap or a full collision.
 	 */
-	collideSpriteVsGroup(sprite, group, collideCallback, processCallback, callbackContext, overlapOnly) {
+	collideSpriteVsGroup(
+		sprite,
+		group,
+		collideCallback,
+		processCallback,
+		callbackContext,
+		overlapOnly,
+	) {
 		var i, len;
 
-		if (group.children.size === 0 || !sprite.body) { return; }
+		if (group.children.size === 0 || !sprite.body) {
+			return;
+		}
 
 		if (sprite.body.skipTree || this.skipTree) {
 			for (i = 0, len = group.children.size; i < len; i++) {
 				const child = group.children.entries[i];
 				if (child) {
-					this.collideSpriteVsSprite(sprite, child, collideCallback, processCallback, callbackContext, overlapOnly);
+					this.collideSpriteVsSprite(
+						sprite,
+						child,
+						collideCallback,
+						processCallback,
+						callbackContext,
+						overlapOnly,
+					);
 				}
 			}
 		} else {
 			//  What is the sprite colliding with in the octree?
 			this.octree.clear();
 
-			this.octree.reset(this.bounds.x, this.bounds.y, this.bounds.z, this.bounds.widthX, this.bounds.widthY, this.bounds.height, this.maxObjects, this.maxLevels);
+			this.octree.reset(
+				this.bounds.x,
+				this.bounds.y,
+				this.bounds.z,
+				this.bounds.widthX,
+				this.bounds.widthY,
+				this.bounds.height,
+				this.maxObjects,
+				this.maxLevels,
+			);
 
 			this.octree.populate(group);
 
@@ -822,7 +979,15 @@ export default class World {
 
 			for (i = 0, len = this._potentials.length; i < len; i++) {
 				//  We have our potential suspects, are they in this group?
-				if (this.separate(sprite.body, this._potentials[i], processCallback, callbackContext, overlapOnly)) {
+				if (
+					this.separate(
+						sprite.body,
+						this._potentials[i],
+						processCallback,
+						callbackContext,
+						overlapOnly,
+					)
+				) {
 					if (collideCallback) {
 						collideCallback.call(callbackContext, sprite, this._potentials[i].sprite);
 					}
@@ -846,7 +1011,9 @@ export default class World {
 	 * @return {boolean} True if there was a collision, otherwise false.
 	 */
 	collideGroupVsSelf(group, collideCallback, processCallback, callbackContext, overlapOnly) {
-		if (group.children.size === 0) { return; }
+		if (group.children.size === 0) {
+			return;
+		}
 
 		var len = group.children.size;
 
@@ -863,7 +1030,7 @@ export default class World {
 						collideCallback,
 						processCallback,
 						callbackContext,
-						overlapOnly
+						overlapOnly,
 					);
 				}
 			}
@@ -882,11 +1049,27 @@ export default class World {
 	 * @param {object} callbackContext - The context in which to run the callbacks.
 	 * @param {boolean} overlapOnly - Just run an overlap or a full collision.
 	 */
-	collideGroupVsGroup(group1, group2, collideCallback, processCallback, callbackContext, overlapOnly) {
-		if (group1.children.size === 0 || group2.children.size === 0) { return; }
+	collideGroupVsGroup(
+		group1,
+		group2,
+		collideCallback,
+		processCallback,
+		callbackContext,
+		overlapOnly,
+	) {
+		if (group1.children.size === 0 || group2.children.size === 0) {
+			return;
+		}
 
 		for (var i = 0, len = group1.children.size; i < len; i++) {
-			this.collideSpriteVsGroup(group1.children.entries[i], group2, collideCallback, processCallback, callbackContext, overlapOnly);
+			this.collideSpriteVsGroup(
+				group1.children.entries[i],
+				group2,
+				collideCallback,
+				processCallback,
+				callbackContext,
+				overlapOnly,
+			);
 		}
 	}
 
@@ -897,13 +1080,45 @@ export default class World {
 	 * @param {Body} body - The Body object to be updated.
 	 */
 	updateMotion(body, delta) {
-		this._velocityDelta = this.computeVelocity(0, body, body.angularVelocity, body.angularAcceleration, body.angularDrag, body.maxAngular) - body.angularVelocity;
+		this._velocityDelta =
+			this.computeVelocity(
+				0,
+				body,
+				body.angularVelocity,
+				body.angularAcceleration,
+				body.angularDrag,
+				body.maxAngular,
+			) - body.angularVelocity;
 		body.angularVelocity += this._velocityDelta;
-		body.rotation += (body.angularVelocity * delta);
+		body.rotation += body.angularVelocity * delta;
 
-		body.velocity.x = this.computeVelocity(1, body, body.velocity.x, body.acceleration.x, body.drag.x, body.maxVelocity.x, delta);
-		body.velocity.y = this.computeVelocity(2, body, body.velocity.y, body.acceleration.y, body.drag.y, body.maxVelocity.y, delta);
-		body.velocity.z = this.computeVelocity(3, body, body.velocity.z, body.acceleration.z, body.drag.z, body.maxVelocity.z, delta);
+		body.velocity.x = this.computeVelocity(
+			1,
+			body,
+			body.velocity.x,
+			body.acceleration.x,
+			body.drag.x,
+			body.maxVelocity.x,
+			delta,
+		);
+		body.velocity.y = this.computeVelocity(
+			2,
+			body,
+			body.velocity.y,
+			body.acceleration.y,
+			body.drag.y,
+			body.maxVelocity.y,
+			delta,
+		);
+		body.velocity.z = this.computeVelocity(
+			3,
+			body,
+			body.velocity.z,
+			body.acceleration.z,
+			body.drag.z,
+			body.maxVelocity.z,
+			delta,
+		);
 	}
 
 	update(time, delta) {

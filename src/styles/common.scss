@@ -16,6 +16,10 @@
 
 html {
     overflow: hidden;
+    --scroll-bar: 0;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: var(--transparent);
+    font-feature-settings: 'tnum', "tnum";
 }
 
 body {
@@ -25,6 +29,7 @@ body {
     padding: 0;
     background: radial-gradient(circle, #000 70%, #111719 100%);
     overflow: hidden;
+    font-family: var(--mono);
 
     &.game {
         // background: radial-gradient(circle, #000 70%, #111719 100%);

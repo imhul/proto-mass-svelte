@@ -36,3 +36,10 @@
 		</span>
 	</nav>
 </header>
+
+<style lang="scss">
+	header {
+		height: 5rem;
+		width: 100%;
+	}
+</style>

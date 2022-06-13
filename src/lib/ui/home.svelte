@@ -5,19 +5,28 @@
 	import Footer from '$ui/footer.svelte';
 </script>
 
-<Header />
-<main>
-	<Hero />
-</main>
-<Footer />
+<div class="container">
+	<Header />
+	<main>
+		<Hero />
+	</main>
+	<Footer />
+</div>
 
 <style lang="scss">
-	main {
-		display: flex;
-		justify-content: center;
-		align-items: center;
+	.container {
 		width: 100%;
-		height: 100%;
 		background: url('/images/bg.gif') no-repeat 50% 50%;
+		background-size: cover;
+
+		main {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			width: 100%;
+			min-height: 100%;
+			height: calc(100vh - 10rem);
+			transform: perspective(300px) rotateX(20deg);
+		}
 	}
 </style>

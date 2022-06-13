@@ -30,7 +30,7 @@ const workspace = JSON.parse(
 const { root, routes, assets } = workspace.projects[project];
 
 const URL = process.env.SVELTEKIT_BLOG_BASE_URL;
-const BASE_URL = URL || 'https://sveltekit-starter-one.vercel.app/';
+const BASE_URL = URL || 'https://proto-mass.netlify.app/';
 const pages = [''];
 
 fs.readdirSync(`${root as string}/${routes as string}`).forEach((file) => {

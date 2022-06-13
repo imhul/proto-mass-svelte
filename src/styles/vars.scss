@@ -21,6 +21,9 @@ $min-width-xx-large: 1600px;
 :root {
 
     // fonts
+	--mono: 'CourierPrime-Regular';
+	--hero: 'NK221';
+	--8-bit: 'PressStart2P-Regular';
 
     // colors
     --transparent: rgba(0, 0, 0, 0);
@@ -87,4 +90,44 @@ $min-width-xx-large: 1600px;
 
     // miscellaneous
 	--inherit: inherit;
+}
+
+@keyframes playHero {
+    from {
+        text-shadow: 4px -4px 0 #ff0045, 8px -8px 0 #5500ff;
+        transform: translate(-50%, -50%) scale(0.4);
+        top: -20%;
+    }
+    10% {
+        text-shadow: 4px -4px 0 #ff0045, 8px -6px 0 #5500ff;
+    }
+    20% {
+        text-shadow: 4px -3px 0 #ff0045, 8px -4px 0 #5500ff;
+    }
+    30% {
+        text-shadow: 4px -2px 0 #ff0045, 8px -2px 0 #5500ff;
+    }
+    40% {
+        text-shadow: 4px -1px 0 #ff0045, 8px -1px 0 #5500ff;
+    }
+    50% {
+        text-shadow: 4px 0 0 #ff0045, 8px 0 0 #5500ff;
+    }
+    60% {
+        text-shadow: 4px 0 0 #ff0045, 8px 1px 0 #5500ff;
+    }
+    70% {
+        text-shadow: 4px 1px 0 #ff0045, 8px 2px 0 #5500ff;
+    }
+    80% {
+        text-shadow: 4px 2px 0 #ff0045, 8px 4px 0 #5500ff;
+    }
+    90% {
+        text-shadow: 4px 3px 0 #ff0045, 8px 6px 0 #5500ff;
+    }
+    to {
+        text-shadow: 4px 4px 0 #ff0045, 8px 8px 0 #5500ff;
+        transform: translate(-50%, -50%) scale(1);
+        top: 50%;
+    }
 }
