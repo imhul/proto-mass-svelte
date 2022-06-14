@@ -9,14 +9,14 @@ function createMessages() {
 	return {
 		subscribe,
 		set,
-        update,
+		update,
 		fixation: (id: string) =>
 			update((boards: Message[]) => {
-                const current = boards.filter((board: Message) => board.id === id)[0];
-                const filtered = boards.filter((board: Message) => board.id !== id)
-                current.fixed = !current.fixed;
-                return [ ...filtered, current ];
-            }),
+				const current = boards.filter((board: Message) => board.id === id)[0];
+				const filtered = boards.filter((board: Message) => board.id !== id);
+				current.fixed = !current.fixed;
+				return [...filtered, current];
+			}),
 		add: (board: Message) =>
 			update((boards: Message[]) => {
 				boards.push(board);

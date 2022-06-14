@@ -27,15 +27,15 @@
 </script>
 
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->
-<div 
-	class="board {board.type ?? 'default'}" 
-	class:fixed="{board.fixed}" 
+<div
+	class="board {board.type ?? 'default'}"
+	class:fixed="{board.fixed}"
 	in:fly="{flyOptions}"
 	out:fade
-	on:click={() => (overBoard = true)}
-	on:mouseenter={() => (overBoard = true)}
-	on:mouseover={() => (overBoard = true)}
-	on:mouseleave={() => (overBoard = false)}
+	on:click="{() => (overBoard = true)}"
+	on:mouseenter="{() => (overBoard = true)}"
+	on:mouseover="{() => (overBoard = true)}"
+	on:mouseleave="{() => (overBoard = false)}"
 >
 	<div class="head">
 		<span>{board.title}</span>
