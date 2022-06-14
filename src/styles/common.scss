@@ -42,14 +42,17 @@ body {
 }
 
 a {
-    color: var(--game-color-darkest);
-    &:hover {
-        color: var(--game-color);
-    }
+    text-decoration: none;
 }
+
 button {
     border-radius: 0;
 }
+
+a, i, button, svg, .btn, .link {
+    transition: color 0.3s, background-color 0.3s, border-color 0.3s, fill 0.3s;
+}
+
 input {
     border-radius: 0;
     &:-internal-autofill-selected {
