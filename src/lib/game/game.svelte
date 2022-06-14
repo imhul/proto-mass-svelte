@@ -4,6 +4,7 @@
 	import { goto } from '$app/navigation';
 	// types
 	import type { ICube } from '$types/objects';
+	import type { Message } from '$types/ui';
 	// store
 	import user from '$store/user/auth';
 	import { unit, units } from '$store/game/unit';
@@ -40,9 +41,8 @@
 	const idLength = new Array(16);
 	const hover = 0x86bfda;
 	$: totalCubes = 0;
+	// $: console.info('messages: ', $messages);
 	$: timeout = GROWTH_COOF * 1000 * (totalCubes <= 1 ? 1 : totalCubes);
-	// $: console.info('$unit: ', $unit);
-	// $: console.info('$units: ', $units);
 
 	const step = () => {
 		tile1PositionX += 0.1;
@@ -121,22 +121,17 @@
 				});
 
 				tile.on('pointerdown', function () {
-					console.info('tile: ', this);
-					messages.set([
-						{
-							id: 'tile-' + tileId,
-							title: 'Name: ' + this.name,
-							aside: 'right',
-							message: `x: ${this._isoPosition.x}, y: ${this._isoPosition.y}`,
-						},
-					]);
+					messages.add({
+						id: 'tile-' + this.name + '-' + (i -= 1),
+						title: 'Name: ' + this.name,
+						aside: 'right',
+						message: `x: ${this._isoPosition.x}, y: ${this._isoPosition.y}`,
+					});
 				});
 
 				tiles.push(tile);
 			}
 		}
-
-		// console.info("tiles: ", tiles);
 	};
 
 	const roam = (cube: ICube) => {
@@ -175,14 +170,12 @@
 				unit.set(cube);
 				$unit.setTint(hover);
 				camera.startFollow($unit);
-				messages.set([
-					{
-						id: 'cube-' + cube.id,
-						title: 'Name: ' + 'The Cube',
-						aside: 'right',
-						message: `x: ${$unit._isoPosition.x}, y: ${$unit._isoPosition.y}`,
-					},
-				]);
+				messages.add({
+					id: 'click-cube-' + cube.id,
+					title: 'Name: ' + 'The Cube',
+					aside: 'right',
+					message: `x: ${$unit._isoPosition.x}, y: ${$unit._isoPosition.y}`,
+				});
 			};
 
 			const kill = () => {

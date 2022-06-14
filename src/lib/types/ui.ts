@@ -11,9 +11,10 @@ export interface Message {
 	title?: string;
 	message?: string;
 	actions?: ButtonUIAction[];
-	autokill?: boolean;
+	expiring?: boolean;
 	aside: 'left' | 'right';
-	isArchived?: boolean;
+	archived?: boolean;
+	fixed?: boolean;
 }
 
 export interface InitialGameState {

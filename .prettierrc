@@ -8,7 +8,7 @@
 	"bracketSpacing": true,
 	"svelteStrictMode": true,
 	"svelteSortOrder": "scripts-options-markup-styles",
-	"svelteAllowShorthand": false,
+	"svelteAllowShorthand": true,
 	"svelteBracketNewLine": true,
 	"svelteIndentScriptAndStyle": true,
 	"htmlWhitespaceSensitivity": "strict",
