@@ -41,7 +41,6 @@
 	const idLength = new Array(16);
 	const hover = 0x86bfda;
 	$: totalCubes = 0;
-	// $: console.info('messages: ', $messages);
 	$: timeout = GROWTH_COOF * 1000 * (totalCubes <= 1 ? 1 : totalCubes);
 
 	const step = () => {
@@ -163,7 +162,6 @@
 		cube.setInteractive();
 
 		const camera = scene.cameras.main;
-		// console.info('touching: ', cube.body.touching)
 
 		cube.on('pointerdown', function () {
 			const check = () => {
