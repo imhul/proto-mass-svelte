@@ -48,25 +48,25 @@
 <style lang="scss">
 	.board {
 		margin-bottom: var(--size-16);
-		text-shadow: 2px 2px 0px var(--game-color-darkest);
+		text-shadow: var(--size-2) var(--size-2) 0 var(--game-color-darkest);
 		font-family: 'PressStart2P-Regular';
 		background-color: var(--game-color-dark);
-		border: 3px solid var(--game-color);
+		border: var(--size-3) solid var(--game-color);
 		flex-direction: column;
 		color: var(--game-color);
 		font-size: 1em;
 		display: flex;
-		padding: 25px;
+		padding: var(--size-24);
 		z-index: 999;
 		opacity: 0.5;
 		width: 100%;
 		.visibility {
 			position: absolute;
 			top: 0;
-			right: 10px;
-			font-size: 20px;
+			right: var(--size-10);
+			font-size: var(--size-20);
 			svg {
-				box-shadow: 2px 2px 0px var(--game-color-darkest);
+				box-shadow: var(--size-2) var(--size-2) 0 var(--game-color-darkest);
 			}
 		}
 	}

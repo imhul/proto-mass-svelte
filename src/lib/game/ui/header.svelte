@@ -2,6 +2,6 @@
 
 <style lang="scss">
 	header {
-		height: 5rem;
+		height: var(--size-80);
 	}
 </style>

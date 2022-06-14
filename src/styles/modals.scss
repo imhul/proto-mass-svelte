@@ -1,15 +1,15 @@
 .game-modal {
     background-color: var(--game-color-dark);
-    border: 3px solid var(--game-color);
-    box-shadow: 2px 2px 0 var(--game-color-darkest);
+    border: var(--size-3) solid var(--game-color);
+    box-shadow: var(--size-2) var(--size-2) 0 var(--game-color-darkest);
     border-radius: 0;
     max-width: 50%;
     .ant-card-body {
         color: var(--game-color);
-        font-size: 16px;
+        font-size: var(--size-16);
         .hello {
             font-family: 'PressStart2P-Regular';
-            text-shadow: 2px 2px 0 var(--game-color-darkest);
+            text-shadow: var(--size-2) var(--size-2) 0 var(--game-color-darkest);
             text-align: center;
         }
     }
@@ -23,7 +23,7 @@
         left: 50%;
         transform: translate(-50%, -50%);
         &.start-game {
-            width: 600px !important;
+            width: 37.5rem !important;
         }
     }
 }

@@ -26,7 +26,7 @@
 			width: 100%;
 			min-height: 100%;
 			height: calc(100vh - 10rem);
-			transform: perspective(300px) rotateX(20deg);
+			transform: perspective(18.75rem) rotateX(20deg);
 		}
 	}
 </style>

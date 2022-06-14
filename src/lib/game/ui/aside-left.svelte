@@ -21,6 +21,6 @@
 		width: 13rem;
 		z-index: 999;
 		left: var(--size-16);
-		top: 5rem;
+		top: var(--size-80);
 	}
 </style>

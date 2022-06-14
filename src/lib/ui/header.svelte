@@ -62,7 +62,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		height: 5rem;
+		height: var(--size-80);
 		width: 100%;
 		padding: 0 var(--size-30);
 		background-color: var(--game-color-dark);
@@ -70,11 +70,11 @@
 		.logo {
 			font-size: var(--size-32);
 			color: var(--game-color);
-			text-shadow: 2px 2px 0px var(--game-color-warn);
+			text-shadow: var(--size-2) var(--size-2) 0 var(--game-color-darkest);
 
 			&:hover {
 				color: var(--game-color-darkest);
-				// text-shadow: 2px 2px 0px var(--game-color-warn);
+				text-shadow: var(--size-2) var(--size-2) 0 var(--game-color-warn);
 			}
 		}
 
@@ -85,12 +85,12 @@
 
 			.menu-link {
 				display: block;
-				height: 5rem;
+				height: var(--size-80);
 				padding: 0 var(--size-20);
-				line-height: 5rem;
+				line-height: var(--size-80);
 				text-transform: uppercase;
 				background: var(--game-color-dark);
-				text-shadow: 2px 2px 0px var(--game-color-warn);
+				text-shadow: var(--size-2) var(--size-2) 0 var(--game-color-darkest);
 
 				span {
 					font-size: var(--size-22);
@@ -104,7 +104,7 @@
 					i,
 					a {
 						color: var(--game-color-darkest);
-						text-shadow: 2px 2px 0px var(--game-color-warn);
+						text-shadow: var(--size-2) var(--size-2) 0 var(--game-color-warn);
 					}
 				}
 			}

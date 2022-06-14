@@ -59,97 +59,33 @@ input {
         background-color: var(--game-color-dark) !important;
     }
 }
+
 div {
     border-radius: 0;
 }
+
 .space-between {
     justify-content: space-between;
 }
+
 .flex {
     display: flex;
 }
+
 .touchable {
     cursor: pointer;
 }
-.ant-form {
-    min-width: 230px;
-    .ant-input-affix-wrapper {
-        padding: 10px 15px;
-        color: var(--game-color-darkest);
-        background-color: var(--game-color-dark);
-        border: 2px solid var(--game-color);
-        box-shadow: 2px 2px 0 var(--game-color-darkest);
-        border-radius: 0;
-        .ant-input-prefix {
-            margin-right: 15px;
-            font-size: 16px;
-        }
-    }
-    .ant-form-item {
-        &.flex-item {
-            .ant-form-item-control-input-content {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-            }
-        }
-        .ant-input {
-            color: var(--game-color-darkest);
-            border: 2px solid var(--game-color);
-            background-color: var(--game-color-dark) !important;
-            border-radius: 0;
-            box-shadow: 2px 2px 0 var(--game-color-darkest);
-            padding: 5px 10px;
-            &::-webkit-input-placeholder {
-                color: var(--game-color-darkest);
-            }
-        }
-    }
-    label {
-        font-family: CourierPrime-Regular;
-        color: var(--game-color-darkest);
-        &::before {
-            font-family: CourierPrime-Regular !important;
-            color: var(--game-color)-darkest !important;
-        }
-    }
-    .ant-checkbox-wrapper {
-        color: var(--game-color-darkest);
-        &:hover {
-            color: var(--game-color);
-            .ant-checkbox {
-                &::after {
-                    border: 2px solid var(--game-color);
-                }
-            }
-        }
-        .ant-checkbox {
-            &:hover {
-                &::after {
-                    border: 2px solid var(--game-color);
-                }
-            }
-            .ant-checkbox-inner {
-                background-color: var(--game-color-darkest);
-                border-color: var(--game-color-darkest);
-                border-radius: 0;
-                &::after {
-                    border-color: var(--game-color-dark);
-                }
-            }
-        }
-    }
-}
-.game-btn {
+
+.btn {
     color: var(--game-color-darkest);
-    border: 2px solid var(--game-color);
+    border: var(--size-2) solid var(--game-color);
     background-color: var(--game-color-dark);
     border-radius: 0;
-    box-shadow: 2px 2px 0 var(--game-color-darkest);
-    margin: 20px auto;
-    font-size: 16px;
-    padding: 0px 15px;
-    line-height: 32px;
+    box-shadow: var(--size-2) var(--size-2) 0 var(--game-color-darkest);
+    margin: var(--size-20) auto;
+    font-size: var(--size-16);
+    padding: 0 var(--size-16);
+    line-height: var(--size-32);
     &:hover {
         background-color: var(--game-color-darkest);
         color: var(--game-color);
@@ -159,20 +95,22 @@ div {
         background-color: var(--game-color);
         color: var(--game-color-darkest);
         border-color: var(--game-color)-darker;
-        box-shadow: 2px 2px 0 var(--game-color-darkest);
+        box-shadow: var(--size-2) var(--size-2) 0 var(--game-color-darkest);
     }
 }
+
 .game-menu-icon {
     font-family: "PixelIconsCompilation";
     vertical-align: middle;
-    font-size: 30px;
-    line-height: 30px;
+    font-size: var(--size-30);
+    line-height: var(--size-30);
     z-index: 999;
     color: var(--game-color-dark);
-    margin-right: 15px;
+    margin-right: var(--size-16);
 }
+
 .game-menu-text-icon {
-    font-size: 30px;
+    font-size: var(--size-30);
     font-family: "PressStart2P-Regular";
     vertical-align: middle;
     z-index: 999;

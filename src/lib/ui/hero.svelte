@@ -12,8 +12,8 @@
 		font-size: 13rem;
 		text-align: center;
 		color: #ff85e5;
-		text-shadow: 4px 4px 0 #ff0045, 8px 8px 0 #5500ff;
-		margin: 0 0 10px;
+		text-shadow: var(--size-4) var(--size-4) 0 #ff0045, var(--size-8) var(--size-8) 0 #5500ff;
+		margin: 0 0 var(--size-10);
 		animation: playHero 20s ease-in-out;
 		user-select: none;
 		touch-action: none;
