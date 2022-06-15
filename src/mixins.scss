@@ -1,0 +1,53 @@
+%nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .menu-link {
+        display: block;
+        height: var(--size-80);
+        padding: 0 var(--size-20);
+        line-height: var(--size-80);
+        text-transform: uppercase;
+        background: var(--game-color-dark);
+        text-shadow: var(--size-2) var(--size-2) 0 var(--game-color-darkest);
+        cursor: pointer;
+
+        span {
+            font-size: var(--size-22);
+            font-family: var(--8-bit);
+            color: var(--game-color);
+        }
+
+        &:hover {
+            background-color: var(--game-color);
+            span,
+            i,
+            a {
+                color: var(--game-color-darkest);
+                text-shadow: var(--size-2) var(--size-2) 0 var(--game-color-warn);
+            }
+        }
+    }
+}
+
+@mixin scrollbar(
+  $size: var(--size-14),
+  $foreground-color: #999,
+  $background-color: #333
+) {
+  // For Chrome & Safari
+  &::-webkit-scrollbar {
+    width: $size;
+    height: $size;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $foreground-color;
+  }
+  &::-webkit-scrollbar-track {
+    background: $background-color;
+  }
+
+  // Standard version (Firefox only for now)
+  scrollbar-color: $foreground-color $background-color;
+}
