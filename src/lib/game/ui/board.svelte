@@ -22,8 +22,9 @@
         }, $user.settings.notifyTimeout);
     };
 
+    $: filtered = $messages?.filter((board: Message) => !board.archived && !board.fixed);
     $: if (overBoard && Boolean(timer)) clearTimeout(timer);
-    $: if ($messages?.length > 1 && !board.fixed) expiring();
+    $: if (filtered?.length > 1 && !board.fixed) expiring();
 </script>
 
 <!-- svelte-ignore a11y-mouse-events-have-key-events -->

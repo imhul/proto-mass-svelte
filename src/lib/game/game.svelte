@@ -36,8 +36,8 @@
     let tile2PositionX = 0;
     let tile3PositionX = 0;
     const MIN_WIDTH_FOR_ZOOM = 1500;
-    const GROWTH_MAX = 20;
-    const GROWTH_COOF = 1;
+    const GROWTH_MAX = 5;
+    const GROWTH_COOF = 2;
     const idLength = new Array(16);
     const hover = 0x86bfda;
     const tilesArray = [Tile0, Tile1, Tile2, Tile3, Tile4, Tile5, Tile6, Tile7, Tile8];
@@ -98,8 +98,6 @@
         const mapSizeX = mapStep * mapCells + offsetX;
         const mapSizeY = mapStep * mapCells + offsetY;
 
-        const tiles: IsoSprite[] = [];
-
         for (var xx = offsetX; xx < mapSizeX; xx += mapStep) {
             for (var yy = offsetY; yy < mapSizeY; yy += mapStep) {
                 i++;
@@ -121,7 +119,7 @@
                 });
 
                 tile.on('pointerdown', function () {
-                    console.info('tile: ', this.texture.key);
+                    // console.info('tile: ', this.texture.key);
                     messages.add({
                         id: 'tile-' + this.name + '-' + (i -= 1),
                         title: 'Name: ' + this.name,
@@ -130,8 +128,6 @@
                         message: `x: ${this._isoPosition.x}, y: ${this._isoPosition.y}`
                     });
                 });
-
-                tiles.push(tile);
             }
         }
     };
@@ -145,6 +141,11 @@
             cube.body.velocity.setTo(isPause ? 0 : randomX, isPause ? 0 : randomY, 0);
             roam(cube);
         }, 1000 + timeoutDir);
+    };
+
+    const collide = () => {
+        // TODO: game objects collide event handler
+        console.info('collide');
     };
 
     const createCube = (scene: Phaser.Scene) => {
@@ -210,6 +211,11 @@
         }, timeout);
     };
 
+    const onKeyup = (e: KeyboardEvent, scene: Phaser.Scene) => {
+        // TODO: pause/resume game: stop cubes, etc.
+        if (e.key === 'Escape') scene.events.emit('pause');
+    };
+
     const preload = (scene: Phaser.Scene) => {
         scene.load.image('tile-0', Tile0);
         scene.load.image('tile-1', Tile1);
@@ -240,11 +246,19 @@
     const create = (scene: Phaser.Scene) => {
         scene.isoGroup = scene.add.group();
 
-        // Apply some gravity on cubes
         scene.isoPhysics.world.gravity.setTo(0, 0, -500);
         scene.isoPhysics.projector.origin.setTo(0.5, 0);
 
-        // Add first cube to scene
+        scene.input.keyboard.on('keyup', (event: KeyboardEvent) => onKeyup(event, scene), scene);
+
+        scene.events.on('pause', function () {
+            console.info('paused');
+        });
+
+        scene.events.on('resume', function () {
+            console.info('resumed');
+        });
+
         cameraControls(scene);
         spawnTiles(scene);
         spawnCubes(scene);
