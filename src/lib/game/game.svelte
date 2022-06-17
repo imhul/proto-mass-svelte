@@ -7,6 +7,7 @@
     // store
     import user from '$store/user/auth';
     import { unit, units } from '$store/game/unit';
+    import { gameUI } from '$store/game/ui';
     import { messages } from '$store/game/notify';
     // components
     import { Scene, TileSprite } from 'svelte-phaser';
@@ -35,6 +36,7 @@
     let tile1PositionX = 0;
     let tile2PositionX = 0;
     let tile3PositionX = 0;
+    const sceneID = "main_scene"
     const MIN_WIDTH_FOR_ZOOM = 1500;
     const GROWTH_MAX = 5;
     const GROWTH_COOF = 2;
@@ -51,7 +53,7 @@
     };
 
     onMount(() => {
-        if (!game) return;
+        if (!game || $gameUI.isGamePaused) return;
         game.events.on('step', step);
 
         return () => {
@@ -133,9 +135,16 @@
     };
 
     const roam = (cube: ICube) => {
+        let timer;
+        if ($gameUI.isGamePaused) {
+            clearTimeout(timer);
+            cube.body.velocity.setTo(0,0,0);
+            return;
+        }
+        // TODO: resume roaming
         const timeoutDir = Math.abs(Math.trunc(Math.random() * 2000 - 50));
         const isPause = Math.random() > 0.5;
-        setTimeout(() => {
+        timer = setTimeout(() => {
             const randomX = Math.trunc(Math.random() * 100 - 50);
             const randomY = Math.trunc(Math.random() * 100 - 50);
             cube.body.velocity.setTo(isPause ? 0 : randomX, isPause ? 0 : randomY, 0);
@@ -149,6 +158,7 @@
     };
 
     const createCube = (scene: Phaser.Scene) => {
+        if ($gameUI.isGamePaused) return;
         totalCubes += 1;
         let cube: ICube;
 
@@ -205,15 +215,32 @@
     };
 
     const spawnCubes = (scene: Phaser.Scene) => {
+        if ($gameUI.isGamePaused) return;
         const timer = setTimeout(() => {
             createCube(scene);
             totalCubes === GROWTH_MAX && clearTimeout(timer);
         }, timeout);
     };
+    
+    const pause = (scene: Phaser.Scene) => {
+        gameUI.set({
+            ...$gameUI,
+            isGamePaused: true,
+        });
+        scene.events.emit('pause');
+    };
+
+    const resume = (scene: Phaser.Scene) => {
+        gameUI.set({
+            ...$gameUI,
+            isGamePaused: false,
+        });
+        scene.events.emit('resume');
+    };
 
     const onKeyup = (e: KeyboardEvent, scene: Phaser.Scene) => {
-        // TODO: pause/resume game: stop cubes, etc.
-        if (e.key === 'Escape') scene.events.emit('pause');
+        if (e.key === 'Escape') pause(scene);
+        if (e.key === 'r') resume(scene);
     };
 
     const preload = (scene: Phaser.Scene) => {
@@ -266,7 +293,7 @@
 </script>
 
 <Scene
-    key="main"
+    key={sceneID}
     mapAdd={{ isoPlugin: 'iso', isoPhysics: 'isoPhysics' }}
     {preload}
     {create}
