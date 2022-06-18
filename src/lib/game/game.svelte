@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
     import Phaser from 'phaser';
     import { goto } from '$app/navigation';
     // types
@@ -11,8 +10,9 @@
     import { gameUI } from '$store/game/ui';
     import { messages } from '$store/game/notify';
     // components
-    import { Scene, TileSprite } from 'svelte-phaser';
+    import { Scene, getScene } from 'svelte-phaser';
     import { IsoPlugin, IsoPhysics, IsoSprite } from '$lib/iso';
+    import Background from '$game/background.svelte';
     // utils
     import { getTileByType } from '$utils/getTileByType';
     import { getMap } from '$utils/getMap';
@@ -29,14 +29,12 @@
     import Tile7 from '$assets/sprites/cube/isometric_pixel_0063.png';
     import Tile8 from '$assets/sprites/cube/isometric_pixel_0063.png';
 
-    export let game: Phaser.Game;
     export let h = 0;
     export let w = 0;
 
     $: !$user.isLoggedIn && goto('/');
-    let tile1PositionX = 0;
-    let tile2PositionX = 0;
-    let tile3PositionX = 0;
+
+    // const scene = getScene();
     const sceneID = 'main_scene';
     const MIN_WIDTH_FOR_ZOOM = 1500;
     const GROWTH_MAX = 5;
@@ -46,22 +44,6 @@
     const tilesArray = [Tile0, Tile1, Tile2, Tile3, Tile4, Tile5, Tile6, Tile7, Tile8];
     $: totalCubes = 0;
     $: timeout = GROWTH_COOF * 1000 * (totalCubes <= 1 ? 1 : totalCubes);
-
-    const step = () => {
-        tile1PositionX += 0.1;
-        tile2PositionX += 0.15;
-        tile3PositionX += 0.2;
-    };
-
-    onMount(() => {
-        if (!game || $gameUI.isGamePaused) return;
-        game.events.on('step', step);
-
-        return () => {
-            if (!game) return;
-            game.events.off('step', step);
-        };
-    });
 
     const cameraControls = (scene: Phaser.Scene) => {
         const camera = scene.cameras.main;
@@ -160,8 +142,9 @@
         }, 1000 + timeoutDir);
     };
 
-    const collide = () => {
+    const collide: ArcadePhysicsCallback = () => {
         // TODO: game objects collide event handler
+        // https://github.com/mattjennings/svelte-phaser/blob/master/examples/invaders/src/App.svelte
         console.info('collide');
     };
 
@@ -184,6 +167,9 @@
 
         // Add a full bounce on the x and y axes, and a bit on the z axis.
         cube.body.bounce.set(1, 1, 0.2);
+        // scene.physics.add.collider($units, $units, collide);
+        scene.physics.add.collider($units, $units, collide);
+        // scene.physics.collide($units, $units, collide);
         cube.setInteractive();
 
         const camera = scene.cameras.main;
@@ -304,6 +290,7 @@
         });
 
         cameraControls(scene);
+        // TODO: replace spawn functions to JSX
         spawnTiles(scene);
         spawnCubes(scene);
     };
@@ -316,44 +303,5 @@
     {create}
     active={$user.isLoggedIn}
 >
-    <TileSprite
-        x={0}
-        y={0}
-        width={w}
-        height={h}
-        originX={0}
-        originY={0}
-        texture="stars-1"
-        tilePositionX={tile1PositionX}
-    />
-    <TileSprite
-        x={0}
-        y={0}
-        width={w}
-        height={h}
-        originX={0}
-        originY={0}
-        texture="stars-2"
-        tilePositionX={tile2PositionX}
-    />
-    <TileSprite
-        x={0}
-        y={0}
-        width={w}
-        height={h}
-        originX={0}
-        originY={0}
-        texture="stars-3"
-        tilePositionX={tile3PositionX}
-    />
-    <TileSprite
-        x={50}
-        y={0}
-        width={w}
-        height={h}
-        originX={0}
-        originY={0}
-        texture="starship"
-        tilePositionX={tile1PositionX}
-    />
+    <Background {w} {h} />
 </Scene>

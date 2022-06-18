@@ -15,7 +15,6 @@
     $: !$user.isLoggedIn && goto('/');
     $: h = 0;
     $: w = 0;
-    let game: Phaser.Game | undefined;
     const onKeypress = (e: KeyboardEvent) => console.info('key: ', e.key);
 </script>
 
@@ -25,9 +24,7 @@
 <AsideL />
 <AsideR />
 {#if browser && w > 0 && h > 0}
-    <Game bind:instance={game} width={w} height={h} backgroundColor="#000">
-        {#if game}
-            <Scenario {game} {w} {h} />
-        {/if}
+    <Game physics={{ default: 'arcade' }} width={w} height={h} backgroundColor="#000">
+        <Scenario {w} {h} />
     </Game>
 {/if}
