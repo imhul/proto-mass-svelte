@@ -3,6 +3,7 @@
     import Phaser from 'phaser';
     import { goto } from '$app/navigation';
     // types
+    import type { Message } from '$types/ui';
     import type { ICube } from '$types/objects';
     // store
     import user from '$store/user/auth';
@@ -36,7 +37,7 @@
     let tile1PositionX = 0;
     let tile2PositionX = 0;
     let tile3PositionX = 0;
-    const sceneID = "main_scene"
+    const sceneID = 'main_scene';
     const MIN_WIDTH_FOR_ZOOM = 1500;
     const GROWTH_MAX = 5;
     const GROWTH_COOF = 2;
@@ -121,13 +122,20 @@
                 });
 
                 tile.on('pointerdown', function () {
-                    // console.info('tile: ', this.texture.key);
+                    let id = tile.name + '-' + (i += 1);
+                    let isDuplicate = $messages
+                        .map((message: Message) => {
+                            message.id;
+                        })
+                        .includes(id);
+                    let suffix = id + '-' + uuidv5('message-' + $messages?.length, idLength);
+
                     messages.add({
-                        id: 'tile-' + this.name + '-' + (i -= 1),
-                        title: 'Name: ' + this.name,
+                        id: isDuplicate ? suffix : id,
+                        title: 'Name: ' + tile.name,
                         aside: 'right',
                         img: tilesArray[tileId],
-                        message: `x: ${this._isoPosition.x}, y: ${this._isoPosition.y}`
+                        message: `x: ${tile._isoPosition.x}, y: ${tile._isoPosition.y}`
                     });
                 });
             }
@@ -138,10 +146,10 @@
         let timer;
         if ($gameUI.isGamePaused) {
             clearTimeout(timer);
-            cube.body.velocity.setTo(0,0,0);
+            cube.body.velocity.setTo(0, 0, 0);
             return;
         }
-        // TODO: resume roaming
+
         const timeoutDir = Math.abs(Math.trunc(Math.random() * 2000 - 50));
         const isPause = Math.random() > 0.5;
         timer = setTimeout(() => {
@@ -160,6 +168,9 @@
     const createCube = (scene: Phaser.Scene) => {
         if ($gameUI.isGamePaused) return;
         totalCubes += 1;
+        if ($units.length) {
+            $units.forEach((unit: ICube) => roam(unit));
+        }
         let cube: ICube;
 
         // Add a cube which is way above the ground
@@ -169,7 +180,7 @@
 
         // Collide with the world bounds so it doesn't go falling forever or fly off the screen!
         cube.body.collideWorldBounds = true;
-        cube.id = uuidv5('cube-' + totalCubes, idLength);
+        cube.id = uuidv5('cube-' + ($units?.length + totalCubes + 1), idLength);
 
         // Add a full bounce on the x and y axes, and a bit on the z axis.
         cube.body.bounce.set(1, 1, 0.2);
@@ -178,20 +189,26 @@
         const camera = scene.cameras.main;
 
         cube.on('pointerdown', function () {
-            const check = () => {
+            const unitFocus = () => {
                 unit.set(cube);
                 $unit.setTint(hover);
                 camera.startFollow($unit);
+                $messages.forEach((board: Message) => {
+                    if (board.parent === 'unit') messages.delete(board.id, 'delete');
+                });
                 messages.add({
-                    id: 'click-cube-' + cube.id,
+                    id: 'click-unit-' + cube.id + '-' + totalCubes,
+                    type: 'info',
                     title: 'Name: ' + 'The Cube',
                     aside: 'right',
                     icon: 'a10',
-                    message: `Game Unit "The Cube" with coordinates x: ${$unit._isoPosition.x} and y: ${$unit._isoPosition.y}`
+                    fixed: true,
+                    parent: 'unit',
+                    message: `x: ${$unit._isoPosition.x} and y: ${$unit._isoPosition.y}`
                 });
             };
 
-            const kill = () => {
+            const unitBlur = () => {
                 $unit.clearTint();
                 camera.stopFollow();
                 unit.set(null);
@@ -199,13 +216,13 @@
 
             if ($unit?.id) {
                 if (cube.id !== $unit.id) {
-                    kill();
-                    check();
+                    unitBlur();
+                    unitFocus();
                 } else {
-                    kill();
+                    unitBlur();
                 }
             } else {
-                check();
+                unitFocus();
             }
         });
 
@@ -221,11 +238,11 @@
             totalCubes === GROWTH_MAX && clearTimeout(timer);
         }, timeout);
     };
-    
+
     const pause = (scene: Phaser.Scene) => {
         gameUI.set({
             ...$gameUI,
-            isGamePaused: true,
+            isGamePaused: true
         });
         scene.events.emit('pause');
     };
@@ -233,7 +250,7 @@
     const resume = (scene: Phaser.Scene) => {
         gameUI.set({
             ...$gameUI,
-            isGamePaused: false,
+            isGamePaused: false
         });
         scene.events.emit('resume');
     };

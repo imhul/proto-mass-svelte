@@ -17,6 +17,7 @@ export interface Message {
     fixed?: boolean;
     img?: string;
     icon?: string;
+    parent?: string;
 }
 
 export interface InitialGameState {

@@ -17,7 +17,7 @@
 
     const expiring = () => {
         timer = setTimeout(() => {
-            messages.delete(board.id);
+            messages.delete(board.id, 'archive');
             clearTimeout(timer);
         }, $user.settings.notifyTimeout);
     };
@@ -46,7 +46,10 @@
                     class="icon-{board.fixed ? 'bar' : 'numbersign'}"
                     on:click={messages.fixation(board.id)}
                 />
-                <i class="icon-forbid" on:click|stopPropagation={() => messages.delete(board.id)} />
+                <i
+                    class="icon-forbid"
+                    on:click|stopPropagation={() => messages.delete(board.id, 'archive')}
+                />
             </div>
         </div>
         <div class="content">

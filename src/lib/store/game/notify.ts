@@ -23,12 +23,22 @@ function createMessages() {
                 return boards;
             }),
         reset: () => set(initState),
-        delete: (id: string) =>
+        delete: (id: string, type: string) =>
             update((boards: Message[]) => {
-                boards.forEach((board: Message) => {
-                    if (board.id === id) board.archived = true;
-                });
-                return boards;
+                const toTrash = () => {
+                    const current = boards.find((board) => board.id === id);
+                    const filtered = boards.filter((board) => board.parent !== current.parent);
+                    return filtered;
+                };
+
+                const toArchive = () => {
+                    boards.forEach((board: Message) => {
+                        if (board.id === id) board.archived = true;
+                    });
+                    return boards;
+                };
+
+                return type === 'archive' ? toArchive() : toTrash();
             })
     };
 }
