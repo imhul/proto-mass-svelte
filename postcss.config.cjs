@@ -7,15 +7,15 @@ const mode = process.env.NODE_ENV;
 const dev = mode === 'development';
 
 const config = {
-	plugins: [
-		autoprefixer({
-			cascade: true,
-		}),
-		!dev &&
-			cssnano({
-				preset: 'advanced',
-			}),
-	],
+    plugins: [
+        autoprefixer({
+            cascade: true
+        }),
+        !dev &&
+            cssnano({
+                preset: 'advanced'
+            })
+    ]
 };
 
 module.exports = config;
